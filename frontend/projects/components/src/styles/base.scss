@@ -1,5 +1,16 @@
 /* BrainQ base — typography utility classes (host-page or :host) */
 
+/* Global keyboard-focus indicator. Two components (bq-button, bq-icon-button)
+ * already declare this rule themselves; the global selector covers every
+ * other interactive <button> emitted from a chip / row / suggestion / nudge /
+ * commitment cell / capture prompt / side-rail item. ViewEncapsulation.Emulated
+ * doesn't sandbox host-page rules, so this reaches every encapsulated child. */
+button:focus-visible {
+  outline: 2px solid var(--bq-accent);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
 .bq-display,
 .bq-display-sm,
 .bq-display-num {

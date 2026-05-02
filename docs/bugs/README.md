@@ -31,3 +31,5 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0025 | [inferType and suggestRelated duplicated across both data-service impls](0025-infer-type-duplicated.md) | Fixed | 2026-05-02 |
 | 0026 | [POST /api/entities produces an empty title when text starts with a newline](0026-empty-title-from-leading-newlines.md) | Fixed | 2026-05-02 |
 | 0027 | [HttpBrainQDataService optimistic title is empty for leading-newline text](0027-http-optimistic-empty-title.md) | Fixed | 2026-05-02 |
+| 0028 | [InMemoryBrainQDataService.capture produces a leading-newline title](0028-in-memory-title-leading-newline.md) | Fixed | 2026-05-02 |
+| 0029 | [Many interactive components lack a :focus-visible outline](0029-missing-focus-visible.md) | Fixed | 2026-05-02 |
