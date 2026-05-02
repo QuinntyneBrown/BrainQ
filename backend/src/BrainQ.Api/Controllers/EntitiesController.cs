@@ -11,7 +11,7 @@ namespace BrainQ.Api.Controllers;
 [Route("api/entities")]
 public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed, TimeProvider clock) : ControllerBase
 {
-    public sealed record CreateRequest(string? Type, string? Text);
+    public sealed record CreateRequest(string? Type, string? Text, string[]? Tags = null);
 
     [HttpPost]
     [EnableRateLimiting("writes")]
@@ -45,6 +45,14 @@ public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed, 
             return BadRequest(new { error = "title >200" });
         }
 
+        var tags = req.Tags ?? [];
+        if (tags.Length > 20) return BadRequest(new { error = ">20 tags" });
+        foreach (var t in tags)
+        {
+            if (string.IsNullOrWhiteSpace(t)) return BadRequest(new { error = "tag empty" });
+            if (t.Length > 64) return BadRequest(new { error = "tag >64" });
+        }
+
         var now = DateTime.UtcNow;
         var title = firstLine.Length <= 80 ? firstLine : firstLine[..80];
         var entity = new Entity
@@ -54,7 +62,7 @@ public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed, 
             Title = title,
             Body = req.Text,
             Subtitle = "Just captured",
-            Tags = [],
+            Tags = tags,
             Attributes = System.Text.Json.JsonDocument.Parse("{}"),
             CreatedUtc = now,
             UpdatedUtc = now,

@@ -63,9 +63,9 @@ export const test = base.extend<{
       const text = input.body
         ? `${input.title ?? 'Untitled'}\n\n${input.body}`
         : (input.title ?? 'Untitled');
-      const res = await api.post('/api/entities', {
-        data: { type: input.type, text },
-      });
+      const data: Record<string, unknown> = { type: input.type, text };
+      if (input.tags && input.tags.length > 0) data['tags'] = input.tags;
+      const res = await api.post('/api/entities', { data });
       if (!res.ok()) throw new Error(`seed failed ${res.status()} ${await res.text()}`);
       const body = await res.json();
       created.push(body.id);
