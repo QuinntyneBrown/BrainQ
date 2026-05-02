@@ -103,6 +103,56 @@ public sealed class EntitiesEndpointsTests
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    [Fact]
+    public async Task CreateEntity_PersistsTagsWhenProvided()
+    {
+        // Bug 0020: tags ride along on capture so e2e fixtures can stand up
+        // RecallQ overdue / nudge state.
+        using var factory = new ApiFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync(
+            "/api/entities",
+            new { type = "Person", text = "Nadia Cole", tags = new[] { "overdue", "close" } });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var created = await ReadJsonAsync(response);
+        var tags = created.RootElement.GetProperty("tags").EnumerateArray()
+            .Select(t => t.GetString()).ToArray();
+        Assert.Equal(new[] { "overdue", "close" }, tags);
+    }
+
+    [Fact]
+    public async Task CreateEntity_RejectsTagOver64Chars()
+    {
+        using var factory = new ApiFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync(
+            "/api/entities",
+            new { type = "Note", text = "n", tags = new[] { new string('a', 65) } });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var body = await ReadJsonAsync(response);
+        Assert.Equal("tag >64", body.RootElement.GetProperty("error").GetString());
+    }
+
+    [Fact]
+    public async Task CreateEntity_RejectsMoreThanTwentyTags()
+    {
+        using var factory = new ApiFactory();
+        using var client = factory.CreateClient();
+        var tooMany = Enumerable.Range(1, 21).Select(i => $"t{i}").ToArray();
+
+        var response = await client.PostAsJsonAsync(
+            "/api/entities",
+            new { type = "Note", text = "n", tags = tooMany });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var body = await ReadJsonAsync(response);
+        Assert.Equal(">20 tags", body.RootElement.GetProperty("error").GetString());
+    }
+
     private static async Task<JsonDocument> ReadJsonAsync(HttpResponseMessage response) =>
         await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
 }
