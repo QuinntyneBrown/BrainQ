@@ -138,6 +138,23 @@ public sealed class EntitiesEndpointsTests
     }
 
     [Fact]
+    public async Task CreateEntity_DerivesTitleFromFirstNonEmptyLine()
+    {
+        // Bug 0026: leading newlines used to make Split('\n')[0] empty, so
+        // the entity persisted with title=''. Title now skips empty lines.
+        using var factory = new ApiFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync(
+            "/api/entities",
+            new { type = "Note", text = "\n\nhello" });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var created = await ReadJsonAsync(response);
+        Assert.Equal("hello", created.RootElement.GetProperty("title").GetString());
+    }
+
+    [Fact]
     public async Task CreateEntity_RejectsMoreThanTwentyTags()
     {
         using var factory = new ApiFactory();
