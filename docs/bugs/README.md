@@ -28,3 +28,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0022 | [SearchScreen semantic mode fires /api/search per keystroke](0022-search-no-debounce.md) | Fixed | 2026-05-02 |
 | 0023 | [refresh() exists on HttpBrainQDataService but isn't on the BrainQDataService interface](0023-refresh-not-on-interface.md) | Fixed | 2026-05-02 |
 | 0024 | [Tweaks panel doesn't close on outside click](0024-tweaks-panel-no-outside-click.md) | Fixed | 2026-05-02 |
+| 0025 | [inferType and suggestRelated duplicated across both data-service impls](0025-infer-type-duplicated.md) | Fixed | 2026-05-02 |
