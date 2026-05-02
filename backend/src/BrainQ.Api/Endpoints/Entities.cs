@@ -91,10 +91,7 @@ public static class EntitiesEndpoints
         };
 
         var vec = await embed.EmbedAsync($"{title}\n\n{req.Text}", ct);
-        if (vec is not null && db.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
-        {
-            entity.Embedding = new Vector(vec);
-        }
+        if (vec is not null) entity.Embedding = new Vector(vec);
 
         db.Entities.Add(entity);
         await db.SaveChangesAsync(ct);

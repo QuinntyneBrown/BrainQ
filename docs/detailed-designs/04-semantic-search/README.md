@@ -1,6 +1,6 @@
 # Slice 04 — Semantic Search
 
-**Status:** Accepted (2026-05-02)
+**Status:** Complete (2026-05-02)
 
 **Traces to:** L2-006, L2-007, L2-012
 
