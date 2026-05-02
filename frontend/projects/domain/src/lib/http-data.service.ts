@@ -29,7 +29,7 @@ export class HttpBrainQDataService implements BrainQDataService {
 
   private readonly _entities = signal<readonly BqEntity[]>([]);
   private readonly _agenda = signal<BqAgenda>(EMPTY_AGENDA);
-  private readonly _captureFailures = signal<number>(0);
+  private readonly _mutationFailures = signal<number>(0);
   private readonly _semanticQ = signal<string>('');
   private readonly _semanticResults = signal<readonly BqEntity[]>([]);
   private readonly _heatmaps = signal<Record<string, BqHeatmap>>({});
@@ -37,7 +37,7 @@ export class HttpBrainQDataService implements BrainQDataService {
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
   readonly agenda: Signal<BqAgenda> = this._agenda.asReadonly();
-  readonly captureFailures: Signal<number> = this._captureFailures.asReadonly();
+  readonly mutationFailures: Signal<number> = this._mutationFailures.asReadonly();
 
   private readonly index = computed(() => {
     const byId = new Map<string, BqEntity>();
@@ -143,7 +143,7 @@ export class HttpBrainQDataService implements BrainQDataService {
       error: () => {
         this._entities.update((xs) => xs.filter((e) => e.id !== optimistic.id));
         this.removeRecent(optimistic.id);
-        this._captureFailures.update((count) => count + 1);
+        this._mutationFailures.update((c) => c + 1);
       },
     });
 
@@ -164,7 +164,7 @@ export class HttpBrainQDataService implements BrainQDataService {
     );
     this._agenda.update((a) => ({ ...a, recent: a.recent.filter((rid) => rid !== id) }));
     this.http.delete(`${this.base}/entities/${id}`).subscribe({
-      error: () => this._entities.set(before),
+      error: () => this.rollback(before),
     });
   }
 
@@ -179,7 +179,7 @@ export class HttpBrainQDataService implements BrainQDataService {
     );
     this.http
       .post(`${this.base}/edges`, { fromEntityId: fromId, toEntityId: toId, type: kind })
-      .subscribe({ error: () => this._entities.set(before) });
+      .subscribe({ error: () => this.rollback(before) });
   }
 
   logCommitment(id: string): void {
@@ -207,7 +207,7 @@ export class HttpBrainQDataService implements BrainQDataService {
             return next;
           });
         },
-        error: () => this._entities.set(before),
+        error: () => this.rollback(before),
       });
   }
 
@@ -224,11 +224,16 @@ export class HttpBrainQDataService implements BrainQDataService {
       next: (edges) => {
         if (edges.length === 0) return;
         this.http.delete(`${this.base}/edges/${edges[0].id}`).subscribe({
-          error: () => this._entities.set(before),
+          error: () => this.rollback(before),
         });
       },
-      error: () => this._entities.set(before),
+      error: () => this.rollback(before),
     });
+  }
+
+  private rollback(before: readonly BqEntity[]): void {
+    this._entities.set(before);
+    this._mutationFailures.update((c) => c + 1);
   }
 
   private hydrate() {

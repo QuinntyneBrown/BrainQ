@@ -50,8 +50,10 @@ export interface BrainQDataService {
   /** Toggle today's activity for a commitment; idempotent within a day. */
   logCommitment(id: string): void;
 
-  /** Increments when an optimistic capture fails and is rolled back. */
-  readonly captureFailures: Signal<number>;
+  /** Increments when any optimistic mutation (capture, removeEntity, addEdge,
+   * removeEdge, logCommitment) fails and is rolled back. The App watches it to
+   * fire a single `Save failed — try again` toast per failure. */
+  readonly mutationFailures: Signal<number>;
 }
 
 export const BRAIN_Q_DATA = new InjectionToken<BrainQDataService>('BRAIN_Q_DATA');

@@ -71,7 +71,7 @@ export class App {
   private readonly router = inject(Router);
   private readonly shell = inject(AppShellState);
   private toastTimer: ReturnType<typeof setTimeout> | undefined;
-  private seenCaptureFailures = 0;
+  private seenMutationFailures = 0;
 
   readonly tabItems = TAB_ITEMS;
   readonly railItems = RAIL_ITEMS;
@@ -95,9 +95,9 @@ export class App {
 
   constructor() {
     effect(() => {
-      const failures = this.data.captureFailures();
-      if (failures > this.seenCaptureFailures) {
-        this.seenCaptureFailures = failures;
+      const failures = this.data.mutationFailures();
+      if (failures > this.seenMutationFailures) {
+        this.seenMutationFailures = failures;
         this.showToast('Save failed — try again');
       }
     });

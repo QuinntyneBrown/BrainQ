@@ -17,11 +17,11 @@ import { structuredSearch } from './structured-search';
 export class InMemoryBrainQDataService implements BrainQDataService {
   private readonly _entities = signal<readonly BqEntity[]>(SEED_ENTITIES);
   private readonly _agenda = signal<BqAgenda>(SEED_AGENDA);
-  private readonly _captureFailures = signal<number>(0);
+  private readonly _mutationFailures = signal<number>(0);
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
   readonly agenda: Signal<BqAgenda> = this._agenda.asReadonly();
-  readonly captureFailures: Signal<number> = this._captureFailures.asReadonly();
+  readonly mutationFailures: Signal<number> = this._mutationFailures.asReadonly();
 
   private readonly index = computed(() => {
     const byId = new Map<string, BqEntity>();
