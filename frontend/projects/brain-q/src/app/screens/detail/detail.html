@@ -42,7 +42,7 @@
           <bq-detail-card-row>
             <div>
               <span class="bq-meta bq-meta-dim">streak</span>
-              <div class="bq-display-num">{{ e.meta.streak }}</div>
+              <div class="bq-display-num">{{ e.meta.streak ?? 0 }}</div>
             </div>
             <div>
               <span class="bq-meta bq-meta-dim">today</span>
@@ -51,7 +51,7 @@
             <div>
               <span class="bq-meta bq-meta-dim">target</span>
               <div class="bq-display-num">
-                {{ e.meta.target }}<span class="bq-display-num-unit"> {{ e.meta.unit }}</span>
+                {{ e.meta.target ?? 0 }}<span class="bq-display-num-unit"> {{ e.meta.unit ?? '' }}</span>
               </div>
             </div>
           </bq-detail-card-row>
@@ -74,15 +74,15 @@
           <bq-detail-card-row>
             <div>
               <span class="bq-meta bq-meta-dim">last seen</span>
-              <div class="bq-stat-mid">{{ e.meta.lastSeen }}</div>
+              <div class="bq-stat-mid">{{ e.meta.lastSeen ?? '—' }}</div>
             </div>
             <div>
               <span class="bq-meta bq-meta-dim">touchpoints</span>
-              <div class="bq-stat-mid">{{ e.meta.touchpoints }}</div>
+              <div class="bq-stat-mid">{{ e.meta.touchpoints ?? 0 }}</div>
             </div>
             <div>
               <span class="bq-meta bq-meta-dim">relationship</span>
-              <div class="bq-stat-mid">{{ e.meta.relationship }}</div>
+              <div class="bq-stat-mid">{{ e.meta.relationship ?? '—' }}</div>
             </div>
           </bq-detail-card-row>
         </bq-detail-card>
@@ -93,11 +93,11 @@
           <bq-detail-card-row>
             <div>
               <span class="bq-meta bq-meta-dim">status</span>
-              <div class="bq-stat-mid">{{ e.meta.status }}</div>
+              <div class="bq-stat-mid">{{ e.meta.status ?? '—' }}</div>
             </div>
             <div>
               <span class="bq-meta bq-meta-dim">due</span>
-              <div class="bq-stat-mid">{{ e.meta.due }}</div>
+              <div class="bq-stat-mid">{{ e.meta.due ?? '—' }}</div>
             </div>
             <div>
               <span class="bq-meta bq-meta-dim">progress</span>
