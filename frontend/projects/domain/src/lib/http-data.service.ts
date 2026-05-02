@@ -15,6 +15,7 @@ import {
 } from './models';
 import { SEED_AGENDA, SEED_HEATMAP } from './seed';
 import { structuredSearch } from './structured-search';
+import { inferType as inferTypeUtil, suggestRelated as suggestRelatedUtil } from './infer-type';
 
 const EMPTY_AGENDA: BqAgenda = {
   ...SEED_AGENDA,
@@ -109,30 +110,11 @@ export class HttpBrainQDataService implements BrainQDataService {
   }
 
   inferType(text: string): BqEntityType {
-    const t = text.toLowerCase().trim();
-    if (!t) return 'Note';
-    if (/\b(idea|what if|maybe i could|possibility)\b/.test(t)) return 'Idea';
-    if (/\b(every day|daily|each week|commit|goal of)\b/.test(t)) return 'Commitment';
-    if (
-      /\b(met|coffee with|called|emailed|birthday)\b/.test(t) ||
-      /\b[A-Z][a-z]+ [A-Z][a-z]+\b/.test(text)
-    )
-      return 'Person';
-    if (/\bproject\b|\bship\b|\bdeadline\b|\bmilestone\b/.test(t)) return 'Project';
-    return 'Note';
+    return inferTypeUtil(text);
   }
 
   suggestRelated(text: string, limit = 3): readonly BqEntity[] {
-    const txt = text.trim();
-    if (!txt) return [];
-    const words = txt.toLowerCase();
-    return this._entities()
-      .filter(
-        (e) =>
-          words.includes(e.title.toLowerCase().split(' ')[0]) ||
-          (e.tags || []).some((tag) => words.includes(tag)),
-      )
-      .slice(0, limit);
+    return suggestRelatedUtil(this._entities(), text, limit);
   }
 
   capture(payload: BqCapturePayload): BqEntity {
