@@ -1,6 +1,6 @@
 # Slice 06 — Commitment Activity
 
-**Status:** Accepted (2026-05-02)
+**Status:** Complete (2026-05-02)
 
 **Traces to:** L2-008, L2-023
 

@@ -45,23 +45,12 @@ public static class EntitiesEndpoints
 
         public EntityDto WithCommitmentMeta(int streak, bool todayDone)
         {
-            using var doc = JsonDocument.Parse(Meta.GetRawText());
-            using var stream = new MemoryStream();
-            using (var writer = new Utf8JsonWriter(stream))
-            {
-                writer.WriteStartObject();
-                foreach (var p in doc.RootElement.EnumerateObject())
-                {
-                    if (p.Name == "streak" || p.Name == "todayDone") continue;
-                    p.WriteTo(writer);
-                }
-                writer.WriteNumber("streak", streak);
-                writer.WriteBoolean("todayDone", todayDone);
-                writer.WriteEndObject();
-            }
-            stream.Position = 0;
-            using var enriched = JsonDocument.Parse(stream);
-            return this with { Meta = enriched.RootElement.Clone() };
+            var bag = new Dictionary<string, JsonElement>();
+            foreach (var p in Meta.EnumerateObject()) bag[p.Name] = p.Value.Clone();
+            bag["streak"] = JsonSerializer.SerializeToElement(streak);
+            bag["todayDone"] = JsonSerializer.SerializeToElement(todayDone);
+            var enriched = JsonSerializer.SerializeToElement(bag);
+            return this with { Meta = enriched };
         }
     }
 

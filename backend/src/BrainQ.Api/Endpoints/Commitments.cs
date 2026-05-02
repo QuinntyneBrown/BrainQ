@@ -41,8 +41,12 @@ public static class CommitmentsEndpoints
             await db.SaveChangesAsync(ct);
         }
 
-        var streak = await ComputeStreakAsync(db, id, today, ct);
-        return Results.Ok(new LogResult(streak, true));
+        var dates = await db.CommitmentActivities
+            .Where(a => a.CommitmentEntityId == id)
+            .Select(a => a.DateUtc)
+            .OrderByDescending(d => d)
+            .ToListAsync(ct);
+        return Results.Ok(new LogResult(StreakFromDates(dates, today), true));
     }
 
     private static async Task<IResult> ActivityAsync(
@@ -94,16 +98,16 @@ public static class CommitmentsEndpoints
         return Results.Ok(dtos);
     }
 
-    internal static int StreakOf(IEnumerable<CommitmentActivity> activity, Guid id, DateOnly today)
+    internal static int StreakOf(IEnumerable<CommitmentActivity> activity, Guid id, DateOnly today) =>
+        StreakFromDates(
+            activity.Where(a => a.CommitmentEntityId == id).Select(a => a.DateUtc).OrderByDescending(d => d),
+            today);
+
+    internal static int StreakFromDates(IEnumerable<DateOnly> descendingDates, DateOnly today)
     {
-        var dates = activity
-            .Where(a => a.CommitmentEntityId == id)
-            .Select(a => a.DateUtc)
-            .OrderByDescending(d => d)
-            .ToList();
         var streak = 0;
         var cursor = today;
-        foreach (var d in dates)
+        foreach (var d in descendingDates)
         {
             if (d == cursor) { streak++; cursor = cursor.AddDays(-1); }
             else if (d < cursor) break;
@@ -116,24 +120,6 @@ public static class CommitmentsEndpoints
 
     internal static DateOnly TodayLocal(TimeProvider clock) =>
         DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
-
-    private static async Task<int> ComputeStreakAsync(AppDbContext db, Guid id, DateOnly today, CancellationToken ct)
-    {
-        var dates = await db.CommitmentActivities
-            .Where(a => a.CommitmentEntityId == id)
-            .Select(a => a.DateUtc)
-            .OrderByDescending(d => d)
-            .ToListAsync(ct);
-
-        var streak = 0;
-        var cursor = today;
-        foreach (var d in dates)
-        {
-            if (d == cursor) { streak++; cursor = cursor.AddDays(-1); }
-            else if (d < cursor) break;
-        }
-        return streak;
-    }
 
     private static int HeatBand(int v) => v switch
     {
