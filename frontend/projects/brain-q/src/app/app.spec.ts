@@ -3,6 +3,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { provideBqHealth, provideBqTweaks, provideBrainQDomain } from 'domain';
+import { AppShellState } from './app-shell-state';
 import { App } from './app';
 import { routes } from './app.routes';
 
@@ -46,5 +47,33 @@ describe('App', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Quiet morning');
+  });
+
+  it('opens the capture sheet when N is pressed (bug 0006)', () => {
+    const shell = TestBed.inject(AppShellState);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    flushHealth();
+
+    expect(shell.captureOpen()).toBe(false);
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'n' }));
+    expect(shell.captureOpen()).toBe(true);
+  });
+
+  it('does NOT trigger the N shortcut while typing in an input', () => {
+    const shell = TestBed.inject(AppShellState);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    flushHealth();
+
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.focus();
+    try {
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'n', bubbles: true }));
+      expect(shell.captureOpen()).toBe(false);
+    } finally {
+      document.body.removeChild(input);
+    }
   });
 });
