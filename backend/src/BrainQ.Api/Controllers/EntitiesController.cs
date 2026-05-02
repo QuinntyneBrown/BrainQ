@@ -9,7 +9,7 @@ namespace BrainQ.Api.Controllers;
 
 [ApiController]
 [Route("api/entities")]
-public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed) : ControllerBase
+public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed, TimeProvider clock) : ControllerBase
 {
     public sealed record CreateRequest(string? Type, string? Text);
 
@@ -135,15 +135,15 @@ public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed) 
             : await db.CommitmentActivities
                 .Where(a => commitmentIds.Contains(a.CommitmentEntityId))
                 .ToListAsync(ct);
-        var today = CommitmentsController.TodayLocal(TimeProvider.System);
+        var today = CommitmentMath.TodayLocal(clock);
 
         return Ok(items.Select(e =>
         {
             var dto = EntityDto.From(e);
             return e.Type == EntityType.Commitment
                 ? dto.WithCommitmentMeta(
-                    streak: CommitmentsController.StreakOf(activity, e.Id, today),
-                    todayDone: CommitmentsController.TodayDoneOf(activity, e.Id, today))
+                    streak: CommitmentMath.StreakOf(activity, e.Id, today),
+                    todayDone: CommitmentMath.TodayDoneOf(activity, e.Id, today))
                 : dto;
         }));
     }

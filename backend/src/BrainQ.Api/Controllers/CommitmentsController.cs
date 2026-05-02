@@ -20,7 +20,7 @@ public sealed class CommitmentsController(AppDbContext db, TimeProvider clock) :
             return NotFound();
         }
 
-        var today = TodayLocal(clock);
+        var today = CommitmentMath.TodayLocal(clock);
         var existing = await db.CommitmentActivities
             .FirstOrDefaultAsync(a => a.CommitmentEntityId == id && a.DateUtc == today, ct);
         if (existing is null)
@@ -40,14 +40,14 @@ public sealed class CommitmentsController(AppDbContext db, TimeProvider clock) :
             .Select(a => a.DateUtc)
             .OrderByDescending(d => d)
             .ToListAsync(ct);
-        return Ok(new LogResult(StreakFromDates(dates, today), true));
+        return Ok(new LogResult(CommitmentMath.StreakFromDates(dates, today), true));
     }
 
     [HttpGet("{id:guid}/activity")]
     public async Task<IActionResult> ActivityAsync(Guid id, [FromQuery] int? weeks, CancellationToken ct)
     {
         var weekCount = Math.Clamp(weeks ?? 18, 1, 52);
-        var today = TodayLocal(clock);
+        var today = CommitmentMath.TodayLocal(clock);
         var startMonday = today.AddDays(-(weekCount * 7) + 1);
         var rows = await db.CommitmentActivities
             .Where(a => a.CommitmentEntityId == id && a.DateUtc >= startMonday)
@@ -77,40 +77,19 @@ public sealed class CommitmentsController(AppDbContext db, TimeProvider clock) :
             .ToListAsync(ct);
 
         var ids = commitments.Select(c => c.Id).ToList();
-        var today = TodayLocal(clock);
+        var today = CommitmentMath.TodayLocal(clock);
         var activity = await db.CommitmentActivities
             .Where(a => ids.Contains(a.CommitmentEntityId))
             .ToListAsync(ct);
 
         var dtos = commitments
             .Select(c => EntityDto.From(c)
-                .WithCommitmentMeta(streak: StreakOf(activity, c.Id, today), todayDone: TodayDoneOf(activity, c.Id, today)))
+                .WithCommitmentMeta(
+                    streak: CommitmentMath.StreakOf(activity, c.Id, today),
+                    todayDone: CommitmentMath.TodayDoneOf(activity, c.Id, today)))
             .ToList();
         return Ok(dtos);
     }
-
-    internal static int StreakOf(IEnumerable<CommitmentActivity> activity, Guid id, DateOnly today) =>
-        StreakFromDates(
-            activity.Where(a => a.CommitmentEntityId == id).Select(a => a.DateUtc).OrderByDescending(d => d),
-            today);
-
-    internal static int StreakFromDates(IEnumerable<DateOnly> descendingDates, DateOnly today)
-    {
-        var streak = 0;
-        var cursor = today;
-        foreach (var d in descendingDates)
-        {
-            if (d == cursor) { streak++; cursor = cursor.AddDays(-1); }
-            else if (d < cursor) break;
-        }
-        return streak;
-    }
-
-    internal static bool TodayDoneOf(IEnumerable<CommitmentActivity> activity, Guid id, DateOnly today) =>
-        activity.Any(a => a.CommitmentEntityId == id && a.DateUtc == today);
-
-    internal static DateOnly TodayLocal(TimeProvider clock) =>
-        DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
 
     private static int HeatBand(int v) => v switch
     {
