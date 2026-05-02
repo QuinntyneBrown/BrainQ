@@ -10,10 +10,10 @@ public static class EntitiesEndpoints
     public static void MapEntitiesEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/entities");
-        group.MapPost("", CreateAsync);
+        group.MapPost("", CreateAsync).RequireRateLimiting("writes");
         group.MapGet("", ListAsync);
         group.MapGet("{id:guid}", GetAsync);
-        group.MapDelete("{id:guid}", DeleteAsync);
+        group.MapDelete("{id:guid}", DeleteAsync).RequireRateLimiting("writes");
     }
 
     public sealed record CreateRequest(string? Type, string? Text);

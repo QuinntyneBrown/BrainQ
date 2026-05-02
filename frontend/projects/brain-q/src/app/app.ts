@@ -18,7 +18,7 @@ import {
   BqTweaksPanel,
   BQ_TYPE_LABEL,
 } from 'components';
-import { BqCapturePayload, BRAIN_Q_DATA } from 'domain';
+import { BqCapturePayload, BQ_HEALTH, BRAIN_Q_DATA } from 'domain';
 import { CaptureSheet } from './components/capture-sheet/capture-sheet';
 import {
   BrainCtxPane,
@@ -67,6 +67,7 @@ const RAIL_ITEMS: BqRailItem[] = [
 })
 export class App {
   private readonly data = inject(BRAIN_Q_DATA);
+  private readonly health = inject(BQ_HEALTH);
   private readonly router = inject(Router);
   private readonly shell = inject(AppShellState);
   private toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -76,6 +77,7 @@ export class App {
   readonly railItems = RAIL_ITEMS;
   readonly openId = this.shell.openId;
   readonly captureOpen = this.shell.captureOpen;
+  readonly apiDown = this.health.down;
   readonly toast = signal<string | null>(null);
   readonly activeTab = toSignal(
     this.router.events.pipe(
@@ -99,6 +101,8 @@ export class App {
         this.showToast('Save failed — try again');
       }
     });
+    this.health.check();
+    setInterval(() => this.health.check(), 60_000);
   }
 
   setTab(id: string | null) {

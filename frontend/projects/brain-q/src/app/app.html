@@ -58,5 +58,11 @@
   <bq-toast data-testid="app-toast">{{ t }}</bq-toast>
 }
 
+@if (apiDown()) {
+  <div class="health-banner" role="status" data-testid="health-banner">
+    Connection lost — retrying.
+  </div>
+}
+
 <bq-tweaks-panel />
 

@@ -12,3 +12,4 @@ export * from './lib/brain-q-data.service';
 export * from './lib/provide-domain';
 export * from './lib/structured-search';
 export * from './lib/tweaks.service';
+export * from './lib/health.service';

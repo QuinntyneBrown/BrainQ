@@ -1,11 +1,15 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using BrainQ.Api;
 using BrainQ.Api.Embeddings;
 using BrainQ.Api.Endpoints;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddJsonConsole(o => o.IncludeScopes = true);
 
 builder.Services.AddOpenApi();
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -35,20 +39,52 @@ else
 
 builder.Services.AddSingleton(TimeProvider.System);
 
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    o.OnRejected = (ctx, _) =>
+    {
+        ctx.HttpContext.Response.Headers["Retry-After"] = "60";
+        return ValueTask.CompletedTask;
+    };
+    o.AddPolicy("writes", _ => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: "global",
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 60,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0,
+        }));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+else
+{
+    app.UseHttpsRedirection();
+    app.Use(async (ctx, next) =>
+    {
+        var headers = ctx.Response.Headers;
+        headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+        headers["X-Content-Type-Options"] = "nosniff";
+        headers["Content-Security-Policy"] =
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+        await next();
+    });
+}
 
-app.UseHttpsRedirection();
+app.UseRateLimiter();
 
 app.MapEntitiesEndpoints();
 app.MapEdgesEndpoints();
 app.MapSearchEndpoints();
 app.MapTodayEndpoints();
 app.MapCommitmentsEndpoints();
+app.MapHealthEndpoints();
 
 app.Run();
 
