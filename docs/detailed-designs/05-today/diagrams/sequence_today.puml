@@ -1,0 +1,29 @@
+@startuml sequence_today
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 05 - Today screen hydration
+
+actor Owner
+participant "App + TodayScreen" as App
+participant "HttpBrainQData\nService" as Http
+participant "TodayEndpoints" as Api
+database "Postgres" as Db
+
+== Boot ==
+App -> Http: <<construct>>
+Http -> Api: GET /api/today
+Api -> Db: SELECT entities, today's CommitmentActivity
+Db --> Api: rows
+Api --> Http: 200 AgendaDto
+Http -> Http: _agenda signal := agenda
+
+== Render ==
+Owner -> App: navigate /today
+App -> Http: read agenda(), entities()
+App --> Owner: greeting + prompt + commitments + nudges + recent
+
+Owner -> App: tap capture prompt
+App -> App: openCapture()
+
+@enduml

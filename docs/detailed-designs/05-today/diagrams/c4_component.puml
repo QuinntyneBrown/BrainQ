@@ -1,0 +1,27 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 05 - Today - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(today, "TodayScreen", "Angular standalone", "Greeting, capture prompt, commitments grid, nudges, recent")
+    Component(http,  "HttpBrainQDataService", "TS class", "agenda Signal hydrated from /api/today")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(ep,    "TodayEndpoints", "Minimal API", "GET /api/today (composes agenda from rows)")
+    Component(ctx,   "AppDbContext", "EF Core", "DbSet<Entity>, DbSet<CommitmentActivity>")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "Entity, CommitmentActivity")
+
+Rel(owner, today, "Lands on /today")
+Rel(today, http,  "Read agenda() signal")
+Rel(http,  ep,    "GET /api/today", "JSON/HTTPS")
+Rel(ep,    ctx,   "Top-3 recent + overdue people + missed daily commitments")
+Rel(ctx,   db,    "SELECT", "SQL")
+
+@enduml

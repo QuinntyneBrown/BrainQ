@@ -1,0 +1,34 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 08 - Operational Hardening - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(http, "HttpBrainQDataService", "TS class", "Network failure -> toast / banner")
+    Component(banner, "Health banner", "Angular", "Subscribes to GET /health every 60s")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(mw,    "Middleware pipeline", "ASP.NET Core", "HSTS, HTTPS redirect, headers, rate limiting, request log")
+    Component(val,   "JSON validation filter", "MinAPI filter", "UnmappedMemberHandling=Disallow + length checks")
+    Component(rl,    "Rate limiter", "AspNetCore.RateLimiting", "writes: 60/min/client")
+    Component(log,   "JSON request logger", "Built-in JsonConsoleFormatter", "traceId, method, path, status, durationMs")
+    Component(hp,    "HealthEndpoints", "Minimal API", "GET /health (200/503)")
+    Component(ctx,   "AppDbContext", "EF Core", "SELECT 1 probe")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL")
+
+Rel(owner, banner, "Sees outage indicator")
+Rel(http, mw, "All API calls", "JSON/HTTPS")
+Rel(banner, hp, "GET /health", "HTTPS")
+Rel(mw, val, "Body schema check")
+Rel(mw, rl, "Token bucket per client")
+Rel(mw, log, "Per-request structured line")
+Rel(hp, ctx, "Probe")
+Rel(ctx, db, "SELECT 1", "SQL")
+
+@enduml

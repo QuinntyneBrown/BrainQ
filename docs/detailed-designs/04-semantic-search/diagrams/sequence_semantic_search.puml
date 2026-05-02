@@ -1,0 +1,27 @@
+@startuml sequence_semantic_search
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 04 - Semantic search query
+
+actor Owner
+participant "SearchScreen" as Search
+participant "HttpBrainQData\nService" as Http
+participant "SearchEndpoints" as Api
+participant "OllamaEmbedding\nClient" as Embed
+database "Postgres + pgvector" as Db
+
+Owner -> Search: toggle mode = semantic
+Owner -> Search: type "graph database for notes"
+Search -> Http: search(q, semantic)
+Http -> Api: GET /api/search?q=graph...
+Api -> Embed: EmbedAsync("graph database for notes")
+Embed --> Api: float[768]
+Api -> Db: SELECT * FROM Entity\nORDER BY Embedding <=> :v\nLIMIT 8
+Db --> Api: top 8 hits
+Api --> Http: 200 [{entity, distance}, ...]
+Http -> Http: _semanticResults := xs
+Search -> Search: results() recomputes
+Search --> Owner: ranked rows
+
+@enduml

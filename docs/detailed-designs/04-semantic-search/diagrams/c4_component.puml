@@ -1,0 +1,35 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 04 - Semantic Search - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(search, "SearchScreen", "Angular standalone", "Mode toggle, input, results")
+    Component(http,   "HttpBrainQDataService", "TS class", "search(q, mode) -> Signal<BqEntity[]>")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(s_ep,   "SearchEndpoints", "Minimal API", "GET /api/search")
+    Component(e_ep,   "EntitiesEndpoints", "Minimal API", "POST /api/entities (embed on write)")
+    Component(embed,  "IEmbeddingClient", "Interface", "EmbedAsync(string)")
+    Component(ollama, "OllamaEmbeddingClient", "HTTP client", "Default impl")
+    Component(ctx,    "AppDbContext", "EF Core + pgvector plugin", "Vector column, cosine distance")
+}
+
+ContainerDb(db, "PostgreSQL + pgvector", "PostgreSQL", "Entity (Embedding HNSW index)")
+System_Ext(prov, "Embeddings Provider", "Ollama / hosted")
+
+Rel(owner, search, "Type query, toggle mode")
+Rel(search, http,  "search(q, mode)")
+Rel(http,  s_ep,   "GET /api/search?q=", "JSON/HTTPS")
+Rel(s_ep,  embed,  "EmbedAsync(q)")
+Rel(s_ep,  ctx,    "ORDER BY embedding <=> :v")
+Rel(e_ep,  embed,  "EmbedAsync(title+body)")
+Rel(embed, ollama, "Default")
+Rel(ollama, prov,  "POST /api/embed")
+Rel(ctx,   db,     "SELECT / INSERT", "SQL")
+
+@enduml

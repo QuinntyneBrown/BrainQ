@@ -1,0 +1,29 @@
+@startuml sequence_detail
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 03 - Open detail and delete
+
+actor Owner
+participant "BrainScreen" as Brain
+participant "App + DetailScreen" as Detail
+participant "HttpBrainQData\nService" as Http
+participant "EntitiesEndpoints" as Api
+database "Postgres" as Db
+
+Owner -> Brain: tap entity row
+Brain -> Detail: openEntity(id)
+Detail -> Http: byId(id), inboundFor(id) (signal cache)
+Detail --> Owner: render body + Connections + Mentioned by
+
+== Delete ==
+Owner -> Detail: more -> Delete
+Detail -> Http: removeEntity(id) [optimistic]
+Http -> Http: filter from entities signal
+Detail -> Detail: back() (overlay closes)
+Http -> Api: DELETE /api/entities/{id}
+Api -> Db: BEGIN TX\nDELETE Edges WHERE from=id OR to=id\nDELETE Entity\nCOMMIT
+Db --> Api: ok
+Api --> Http: 204
+
+@enduml

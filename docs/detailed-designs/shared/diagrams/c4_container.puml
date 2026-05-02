@@ -1,0 +1,22 @@
+@startuml c4_container
+!theme plain
+!include <C4/C4_Container>
+
+title BrainQ - Containers
+
+Person(owner, "Owner", "Single user")
+
+System_Boundary(brainq, "BrainQ") {
+    Container(spa, "brain-q SPA", "Angular 21, standalone, signals", "Today / Brain / Search / Detail screens, Capture sheet, Tweaks")
+    Container(api, "brain-q API", "ASP.NET Core 9, EF Core, Npgsql, pgvector", "Minimal API endpoints. Single project, no service layer.")
+    ContainerDb(db, "PostgreSQL 16 + pgvector", "PostgreSQL", "Entity, Edge, CommitmentActivity")
+}
+
+System_Ext(embed, "Embeddings Provider", "Ollama or hosted API")
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "JSON over /api", "HTTPS")
+Rel(api, db, "EF Core / SQL", "TCP 5432")
+Rel(api, embed, "Embed text on write + search", "HTTP")
+
+@enduml

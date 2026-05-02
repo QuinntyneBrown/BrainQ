@@ -1,0 +1,14 @@
+@startuml c4_context
+!theme plain
+!include <C4/C4_Context>
+
+title BrainQ - System Context
+
+Person(owner, "Owner", "Single user. Captures and recalls personal knowledge.")
+System(brainq, "BrainQ", "Personal knowledge graph: notes, ideas, people, projects, commitments")
+System_Ext(embed, "Embeddings Provider", "Ollama or hosted API. Returns a vector for a string.")
+
+Rel(owner, brainq, "Captures, browses, searches", "HTTPS, browser")
+Rel(brainq, embed, "Requests embeddings on entity write and search", "HTTPS / local HTTP")
+
+@enduml

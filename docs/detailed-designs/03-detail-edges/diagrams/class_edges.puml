@@ -1,0 +1,39 @@
+@startuml class_edges
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+
+title Slice 03 - Edge model
+
+class Entity {
+  +Id : Guid
+  +Type : EntityType
+  +Title : string
+}
+
+class Edge {
+  +Id : Guid
+  +FromEntityId : Guid
+  +ToEntityId : Guid
+  +Type : EdgeKind
+  +CreatedUtc : DateTime
+}
+
+enum EdgeKind {
+  mentions
+  blocks
+  fulfills
+  relatesTo
+}
+
+Entity "1" -- "0..*" Edge : From >
+Entity "1" -- "0..*" Edge : To >
+
+note right of Edge
+  Unique (From, To, Type)
+  Cascade-delete via
+  endpoint transaction,
+  not FK ON DELETE.
+end note
+
+@enduml

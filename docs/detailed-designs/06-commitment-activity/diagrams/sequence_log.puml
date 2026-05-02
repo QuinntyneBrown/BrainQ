@@ -1,0 +1,34 @@
+@startuml sequence_log
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 06 - Log a commitment for today
+
+actor Owner
+participant "TodayScreen / DetailScreen" as Ui
+participant "HttpBrainQData\nService" as Http
+participant "Commitments\nEndpoints" as Api
+database "Postgres" as Db
+
+Owner -> Ui: tap commitment toggle / 'Log today'
+Ui -> Http: logCommitment(id)
+Http -> Http: optimistic: meta.todayDone=true,\n streak+=1 (cached)
+Http -> Api: POST /api/commitments/{id}/log
+Api -> Db: SELECT existing for (id, today)
+alt no row
+    Api -> Db: INSERT CommitmentActivity (today)
+end
+Api -> Db: SELECT dates ORDER BY DESC -> compute streak
+Db --> Api: streak
+Api --> Http: 200 { streak, todayDone:true }
+Http -> Http: overwrite cached meta with server values
+
+Owner -> Ui: open detail
+Ui -> Http: heatmapFor(id)
+Http -> Api: GET /api/commitments/{id}/activity?weeks=18
+Api -> Db: SELECT activity in window
+Db --> Api: rows
+Api --> Http: 200 { cells: int[18][7] }
+Ui --> Owner: heatmap renders
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml sequence_tweaks
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 07 - Apply theme / accent / density
+
+actor Owner
+participant "BqTweaksPanel" as Panel
+participant "LocalStorageBqTweaks" as Svc
+participant "localStorage" as Ls
+participant ":root" as Root
+
+== Boot ==
+Svc -> Ls: get bq.theme, bq.accent, bq.density
+Ls --> Svc: 'sepia','moss','cozy'
+Svc -> Root: data-theme=sepia, data-density=cozy,\n--bq-accent=oklch(...) (effect on construct)
+
+== User changes accent ==
+Owner -> Panel: tap 'rose' chip
+Panel -> Svc: setAccent('rose')
+Svc -> Ls: setItem('bq.accent','rose')
+Svc -> Svc: _accent signal := 'rose'
+Svc -> Root: --bq-accent=oklch(...) (effect re-runs)
+Root --> Owner: page repaints with new accent
+
+== Reload ==
+Owner -> Panel: F5
+Svc -> Ls: read 'rose'
+Svc -> Root: apply rose on construct
+
+@enduml

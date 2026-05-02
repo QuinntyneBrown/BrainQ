@@ -1,0 +1,29 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 01 - Capture - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(shell, "App + AppShellState", "Angular standalone", "Owns captureOpen signal, toast")
+    Component(sheet, "CaptureSheet", "Angular standalone", "Textarea, type chips, suggested links, Save")
+    Component(http,  "HttpBrainQDataService", "TS class, DI BRAIN_Q_DATA", "Signal cache + HttpClient")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(ep,    "EntitiesEndpoints", "Minimal API", "POST /api/entities, GET /api/entities, GET /api/entities/{id}")
+    Component(ctx,   "AppDbContext", "EF Core", "DbSet<Entity>")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "Entity")
+
+Rel(owner, sheet, "Types and taps Save")
+Rel(sheet, http,  "capture(payload)")
+Rel(http,  ep,    "POST /api/entities", "JSON/HTTPS")
+Rel(ep,    ctx,   "Add + SaveChanges")
+Rel(ctx,   db,    "INSERT", "SQL")
+Rel(http,  shell, "Updates entities signal -> screens re-render")
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 06 - Commitment Activity - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(today,  "TodayScreen + commitment-cell", "Angular", "Toggle (open=tap, log=long-press or check)")
+    Component(detail, "DetailScreen + heatmap", "Angular", "Heatmap + 'Log today' button")
+    Component(http,   "HttpBrainQDataService", "TS class", "logCommitment, heatmapFor")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(ep,    "CommitmentsEndpoints", "Minimal API", "POST log, GET activity, GET list")
+    Component(ents,  "EntitiesEndpoints", "Minimal API", "List/Detail enriched with streak + todayDone")
+    Component(ctx,   "AppDbContext", "EF Core", "DbSet<Entity>, DbSet<CommitmentActivity>")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "Entity, CommitmentActivity")
+
+Rel(owner, today,  "Toggle commitment for today")
+Rel(owner, detail, "Log today, view heatmap")
+Rel(today, http,   "logCommitment(id)")
+Rel(detail, http,  "logCommitment(id), heatmapFor(id)")
+Rel(http,  ep,     "POST log, GET activity", "JSON/HTTPS")
+Rel(ep,    ctx,    "Upsert + recompute streak")
+Rel(ents,  ctx,    "Stitch streak/todayDone into list")
+Rel(ctx,   db,     "SQL")
+
+@enduml

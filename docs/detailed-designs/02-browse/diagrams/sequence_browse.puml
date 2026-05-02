@@ -1,0 +1,33 @@
+@startuml sequence_browse
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 02 - Browse and filter
+
+actor Owner
+participant "BrainScreen" as Brain
+participant "HttpBrainQData\nService" as Http
+participant "EntitiesEndpoints" as Api
+database "Postgres" as Db
+
+== App boot ==
+Http -> Api: GET /api/entities
+Api -> Db: SELECT *
+Db --> Api: rows
+Api --> Http: 200 [entities]
+Http -> Http: entities signal := [...]
+
+== Browse ==
+Owner -> Brain: navigate /brain
+Brain -> Http: read entities() (default filter=Person)
+Brain --> Owner: render RecallQ band + person rows
+
+Owner -> Brain: type "iris" in search
+Brain -> Brain: query := "iris" (computed list re-derives)
+Brain --> Owner: filtered rows
+
+Owner -> Brain: tap chip Project
+Brain -> Brain: filter := Project, recallq band hides
+Brain --> Owner: project rows
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 03 - Detail and Edges - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(detail, "DetailScreen", "Angular standalone", "Body, stats card, Connections, Mentioned by")
+    Component(nbr,    "NeighborhoodCtxPane", "Angular standalone", "Radial SVG (xl only)")
+    Component(http,   "HttpBrainQDataService", "TS class", "byId, inboundFor, removeEntity, addEdge, removeEdge")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(ents, "EntitiesEndpoints", "Minimal API", "GET id, DELETE id")
+    Component(eds,  "EdgesEndpoints", "Minimal API", "POST, GET, DELETE")
+    Component(ctx,  "AppDbContext", "EF Core", "DbSet<Entity>, DbSet<Edge>")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "Entity, Edge")
+
+Rel(owner, detail, "Open, delete, navigate edges")
+Rel(detail, http,  "byId, inboundFor, removeEntity")
+Rel(nbr,    http,  "byId, inboundFor")
+Rel(http,   ents,  "GET, DELETE", "JSON/HTTPS")
+Rel(http,   eds,   "POST, DELETE", "JSON/HTTPS")
+Rel(ents,   ctx,   "Find, Remove")
+Rel(eds,    ctx,   "Add, Remove")
+Rel(ctx,    db,    "SQL")
+
+@enduml

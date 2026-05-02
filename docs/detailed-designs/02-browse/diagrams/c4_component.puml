@@ -1,0 +1,27 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 02 - Browse - Components
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(brain, "BrainScreen", "Angular standalone", "Filter chips + search input + RecallQ band + entity rows")
+    Component(http,  "HttpBrainQDataService", "TS class", "entities Signal hydrated from /api/entities")
+}
+
+Container_Boundary(api, "brain-q API") {
+    Component(ep,    "EntitiesEndpoints", "Minimal API", "GET /api/entities (type, q, relatedTo, edgeType, from, to, take, skip)")
+    Component(ctx,   "AppDbContext", "EF Core", "DbSet<Entity>, DbSet<Edge>")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "Entity, Edge")
+
+Rel(owner, brain, "Tap chips, type query")
+Rel(brain, http,  "Read entities() signal")
+Rel(http,  ep,    "GET /api/entities", "JSON/HTTPS")
+Rel(ep,    ctx,   "Linq -> SQL")
+Rel(ctx,   db,    "SELECT", "SQL")
+
+@enduml

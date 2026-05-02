@@ -1,0 +1,63 @@
+@startuml class_overview
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+
+title BrainQ - Domain Model
+
+enum EntityType {
+  Person
+  Project
+  Commitment
+  Note
+  Idea
+}
+
+enum EdgeKind {
+  mentions
+  blocks
+  fulfills
+  relatesTo
+}
+
+class Entity {
+  +Id : Guid
+  +Type : EntityType
+  +Title : string  <<<=200>>
+  +Subtitle : string?
+  +Body : string?  <<<=100000>>
+  +Tags : string[]
+  +Attributes : JsonDocument
+  +Embedding : Vector?  <<dim configured>>
+  +CreatedUtc : DateTime
+  +UpdatedUtc : DateTime
+}
+
+class Edge {
+  +Id : Guid
+  +FromEntityId : Guid
+  +ToEntityId : Guid
+  +Type : EdgeKind
+  +CreatedUtc : DateTime
+}
+
+class CommitmentActivity {
+  +Id : Guid
+  +CommitmentEntityId : Guid
+  +DateUtc : date
+  +Value : int
+}
+
+Entity "1" -- "*" Edge : From
+Entity "1" -- "*" Edge : To
+Entity "1" -- "*" CommitmentActivity : (when Type=Commitment)
+
+note bottom of Entity
+  Type-specific keys live in Attributes:
+  Person       : lastSeen, touchpoints, relationship
+  Project      : status, due, progress
+  Commitment   : cadence, target, unit
+  Note / Idea  : created, heat
+end note
+
+@enduml

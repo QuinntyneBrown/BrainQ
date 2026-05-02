@@ -1,0 +1,21 @@
+@startuml c4_component
+!theme plain
+!include <C4/C4_Component>
+
+title Slice 07 - Tweaks - Components (frontend only)
+
+Person(owner, "Owner")
+
+Container_Boundary(spa, "brain-q SPA") {
+    Component(panel, "BqTweaksPanel", "Angular standalone (components lib)", "Floating cog; theme/accent/density radios")
+    Component(svc,   "LocalStorageBqTweaks", "TS class, DI BQ_TWEAKS", "Signals + effect that writes :root CSS vars")
+    Component(ls,    "localStorage", "Web API", "Keys: bq.theme, bq.accent, bq.density")
+    Component(root,  "document.documentElement", "DOM", "data-theme, data-density, --bq-accent*")
+}
+
+Rel(owner, panel, "Toggle, pick options")
+Rel(panel, svc,   "setTheme/Accent/Density")
+Rel(svc,   ls,    "Read on construct, write on set")
+Rel(svc,   root,  "Apply CSS vars + dataset (effect)")
+
+@enduml

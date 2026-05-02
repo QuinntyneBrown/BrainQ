@@ -1,0 +1,34 @@
+@startuml class_activity
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+
+title Slice 06 - Activity Model
+
+class Entity {
+  +Id : Guid
+  +Type : EntityType
+  +Title : string
+  +Attributes : JsonDocument
+  --
+  cadence, target, unit
+  (when Type=Commitment)
+}
+
+class CommitmentActivity {
+  +Id : Guid
+  +CommitmentEntityId : Guid
+  +DateUtc : date
+  +Value : int  (default 1)
+}
+
+Entity "1" -- "0..*" CommitmentActivity : (Type=Commitment)
+
+note right of CommitmentActivity
+  Unique (CommitmentEntityId, DateUtc).
+  Streak = consecutive days with row,
+  computed on demand server-side.
+  Heatmap = grouped cells, banded 0..4.
+end note
+
+@enduml

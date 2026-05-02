@@ -1,0 +1,29 @@
+@startuml sequence_save
+!theme plain
+skinparam sequenceMessageAlign center
+
+title Slice 01 - Capture and Save (optimistic)
+
+actor Owner
+participant "CaptureSheet\n(Angular)" as Sheet
+participant "HttpBrainQData\nService" as Http
+participant "EntitiesEndpoints\n(.NET)" as Api
+database "Postgres" as Db
+
+Owner -> Sheet: tap Capture button
+Sheet -> Sheet: open(), focus textarea
+Owner -> Sheet: type "met Iris for coffee"
+Sheet -> Sheet: inferType -> Person\nsuggestRelated -> [Iris Okafor]
+Owner -> Sheet: tap Save
+Sheet -> Http: capture({type:Person, text})
+Http -> Http: append optimistic entity\n(entities signal updates)
+Http --> Sheet: optimistic BqEntity
+Sheet -> Sheet: closed, toast "Saved as person..."
+Http -> Api: POST /api/entities
+Api -> Api: validate (L2-015)
+Api -> Db: INSERT INTO Entity
+Db --> Api: 1 row
+Api --> Http: 201 + EntityDto
+Http -> Http: replace optimistic with server row
+
+@enduml
