@@ -42,4 +42,15 @@ describe('TodayScreen — slice 05 hydration + testids', () => {
     expect(host.querySelector('[data-testid="today-greeting"]')?.textContent).toContain('Quiet morning');
     expect(host.querySelector('[data-testid="today-capture-prompt"]')).toBeTruthy();
   });
+
+  it('footer shows live entity + edge counts (bug 0007)', () => {
+    const fixture = TestBed.createComponent(TodayScreen);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    const footer = host.querySelector('.footnote')?.textContent ?? '';
+    expect(footer).toContain('BrainQ · 0 entities · 0 edges');
+    expect(footer).not.toContain('18 entities');
+    expect(footer).not.toContain('synced 2 min ago');
+  });
 });
