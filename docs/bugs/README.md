@@ -25,3 +25,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0019 | [Detail's Connections section renders empty when every edge target is deleted](0019-detail-connections-empty-when-targets-deleted.md) | Fixed | 2026-05-02 |
 | 0020 | [POST /api/entities doesn't accept tags; e2e seedEntity silently drops them](0020-create-entity-doesnt-accept-tags.md) | Fixed | 2026-05-02 |
 | 0021 | [Missing EF Core migrations for Edge and CommitmentActivity](0021-missing-edge-commitment-migrations.md) | Fixed | 2026-05-02 |
+| 0022 | [SearchScreen semantic mode fires /api/search per keystroke](0022-search-no-debounce.md) | Fixed | 2026-05-02 |

@@ -70,4 +70,30 @@ describe('SearchScreen — slice 04 semantic vs structured', () => {
     const host = fixture.nativeElement as HTMLElement;
     expect(host.querySelector('[data-testid="search-suggestion-0"]')).toBeTruthy();
   });
+
+  it('debounces semantic queries — three rapid keystrokes → one request (bug 0022)', async () => {
+    const fixture = TestBed.createComponent(SearchScreen);
+    fixture.detectChanges();
+    const cmp = fixture.componentInstance;
+
+    cmp.setMode('semantic');
+    cmp.query.set('g');
+    fixture.detectChanges();
+    cmp.query.set('gr');
+    fixture.detectChanges();
+    cmp.query.set('graph');
+    fixture.detectChanges();
+
+    // Inside the 250 ms window, no /api/search request should be queued.
+    httpMock.expectNone((r) => r.url === '/api/search');
+
+    // Wait past the debounce period.
+    await new Promise((r) => setTimeout(r, 320));
+    fixture.detectChanges();
+
+    const reqs = httpMock.match((r) => r.url === '/api/search');
+    expect(reqs.length).toBe(1);
+    expect(reqs[0].request.params.get('q')).toBe('graph');
+    reqs[0].flush([]);
+  });
 });
