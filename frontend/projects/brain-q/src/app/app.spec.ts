@@ -76,4 +76,16 @@ describe('App', () => {
       document.body.removeChild(input);
     }
   });
+
+  it('Escape closes the capture sheet when it is open (bug 0010)', () => {
+    const shell = TestBed.inject(AppShellState);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    flushHealth();
+
+    shell.openCapture();
+    expect(shell.captureOpen()).toBe(true);
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(shell.captureOpen()).toBe(false);
+  });
 });
