@@ -52,6 +52,7 @@ export class HttpBrainQDataService implements BrainQDataService {
 
   constructor() {
     this.hydrate();
+    this.hydrateAgenda();
   }
 
   byId(id: string): BqEntity | undefined {
@@ -132,6 +133,7 @@ export class HttpBrainQDataService implements BrainQDataService {
 
   refresh(): void {
     this.hydrate();
+    this.hydrateAgenda();
   }
 
   removeEntity(id: string): void {
@@ -184,6 +186,12 @@ export class HttpBrainQDataService implements BrainQDataService {
   private hydrate() {
     this.http.get<readonly BqEntity[]>(`${this.base}/entities`).subscribe((xs) => {
       this._entities.set(xs);
+    });
+  }
+
+  private hydrateAgenda() {
+    this.http.get<BqAgenda>(`${this.base}/today`).subscribe({
+      next: (a) => this._agenda.set(a),
     });
   }
 

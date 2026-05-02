@@ -1,12 +1,16 @@
 <div class="screen">
   <header class="head">
     <span class="bq-meta bq-meta-dim">{{ dateUpper() }}</span>
-    <h1 class="bq-display">{{ agenda().greeting }}.</h1>
+    <h1 class="bq-display" data-testid="today-greeting">{{ agenda().greeting }}.</h1>
   </header>
 
-  <bq-capture-prompt [text]="agenda().prompt" (capture)="requestCapture()" />
+  <bq-capture-prompt
+    [text]="agenda().prompt"
+    (capture)="requestCapture()"
+    data-testid="today-capture-prompt"
+  />
 
-  <section class="block">
+  <section class="block" data-testid="today-commitments">
     <bq-section-label [count]="commitments().length">Commitments</bq-section-label>
     <div class="commit-grid">
       @for (c of commitments(); track c.id) {
@@ -17,13 +21,14 @@
           [value]="commitValue(c.meta.todayDone)"
           [done]="!!c.meta.todayDone"
           (open)="requestOpen(c.id)"
+          [attr.data-testid]="'commitment-cell-' + c.id"
         />
       }
     </div>
   </section>
 
   @if (agenda().nudges.length) {
-    <section class="block">
+    <section class="block" data-testid="today-nudges">
       <bq-section-label>On your mind</bq-section-label>
       <ul class="nudges">
         @for (n of nudges(); track n.nudge.id) {
@@ -32,6 +37,7 @@
             [entityType]="n.entity ? n.entity.type : null"
             [entityTitle]="n.entity ? n.entity.title : ''"
             (open)="requestOpen(n.nudge.entityId)"
+            [attr.data-testid]="'nudge-' + n.nudge.id"
           />
         }
       </ul>

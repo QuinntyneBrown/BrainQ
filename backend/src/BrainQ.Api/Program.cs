@@ -33,6 +33,8 @@ else
     builder.Services.AddSingleton<IEmbeddingClient, NullEmbeddingClient>();
 }
 
+builder.Services.AddSingleton(TimeProvider.System);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -45,6 +47,7 @@ app.UseHttpsRedirection();
 app.MapEntitiesEndpoints();
 app.MapEdgesEndpoints();
 app.MapSearchEndpoints();
+app.MapTodayEndpoints();
 
 app.Run();
 

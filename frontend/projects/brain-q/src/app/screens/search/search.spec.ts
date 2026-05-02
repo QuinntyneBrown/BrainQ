@@ -22,6 +22,13 @@ describe('SearchScreen — slice 04 semantic vs structured', () => {
     // Inject BRAIN_Q_DATA so the http service constructs and fires hydration.
     TestBed.inject(BRAIN_Q_DATA);
     httpMock.expectOne('/api/entities').flush([]);
+    httpMock.expectOne('/api/today').flush({
+      date: '',
+      greeting: '',
+      prompt: '',
+      recent: [],
+      nudges: [],
+    });
   });
 
   afterEach(() => httpMock.verify());
