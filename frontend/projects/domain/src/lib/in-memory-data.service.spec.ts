@@ -43,4 +43,13 @@ describe('InMemoryBrainQDataService — slice 03 mutations', () => {
     expect(service.byId(b.id)?.edges).toEqual([]);
     expect(service.inboundFor(b.id)).toEqual([]);
   });
+
+  it('removeEntity also drops the matching nudge from the agenda (bug 0016)', () => {
+    // Seed agenda includes a nudge for p_nadia.
+    expect(service.agenda().nudges.some((n) => n.entityId === 'p_nadia')).toBe(true);
+
+    service.removeEntity('p_nadia');
+
+    expect(service.agenda().nudges.some((n) => n.entityId === 'p_nadia')).toBe(false);
+  });
 });
