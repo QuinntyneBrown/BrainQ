@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { BrainQDataService, BRAIN_Q_DATA } from './brain-q-data.service';
 import { InMemoryBrainQDataService } from './in-memory-data.service';
+import { provideBrainQDomain } from './provide-domain';
 
 describe('InMemoryBrainQDataService — slice 03 mutations', () => {
   let service: InMemoryBrainQDataService;
@@ -51,5 +53,12 @@ describe('InMemoryBrainQDataService — slice 03 mutations', () => {
     service.removeEntity('p_nadia');
 
     expect(service.agenda().nudges.some((n) => n.entityId === 'p_nadia')).toBe(false);
+  });
+
+  it('refresh() is callable through the BrainQDataService interface (bug 0023)', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: [provideBrainQDomain()] });
+    const data: BrainQDataService = TestBed.inject(BRAIN_Q_DATA);
+    expect(() => data.refresh()).not.toThrow();
   });
 });
