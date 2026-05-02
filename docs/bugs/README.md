@@ -12,3 +12,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0006 | [Side rail and user guide promise an N shortcut that is never bound](0006-n-keyboard-shortcut-unbound.md) | Fixed | 2026-05-02 |
 | 0007 | [Today screen footer ships hardcoded counts and a fake synced timestamp](0007-today-footer-hardcoded.md) | Fixed | 2026-05-02 |
 | 0008 | [bq-search-bar [autofocus] doesn't reliably focus on route navigation](0008-search-bar-autofocus-unreliable.md) | Fixed | 2026-05-02 |
+| 0009 | [getting-started.md misnames the type glyphs](0009-getting-started-glyph-names.md) | Fixed | 2026-05-02 |
