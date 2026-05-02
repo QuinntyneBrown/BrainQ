@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { BqAccent, BqDensity, BqTheme, BQ_TWEAKS } from 'domain';
 import { BqIcon } from '../icon/icon';
 import { BqIconButton } from '../icon-button/icon-button';
@@ -21,6 +29,19 @@ export class BqTweaksPanel {
   readonly accent = this.tweaks.accent;
   readonly density = this.tweaks.density;
   readonly open = signal(false);
+  private readonly wrap = viewChild<ElementRef<HTMLElement>>('wrap');
+
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.open()) return;
+      const el = this.wrap()?.nativeElement;
+      const onPointerDown = (e: PointerEvent) => {
+        if (el && !el.contains(e.target as Node)) this.open.set(false);
+      };
+      document.addEventListener('pointerdown', onPointerDown);
+      onCleanup(() => document.removeEventListener('pointerdown', onPointerDown));
+    });
+  }
 
   toggle(): void {
     this.open.update((v) => !v);
