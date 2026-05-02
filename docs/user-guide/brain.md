@@ -6,7 +6,10 @@ The Brain screen is your full library. Every entity you've captured is here, sor
 
 ### Header
 - A small `YOUR BRAIN` label.
-- A heading that reflects the active filter — `Everything you've captured` for `All`, `<Type>s in your brain` for a specific type.
+- A heading that reflects the active filter:
+  - `All` → `Everything`
+  - `Person` → `People you know`
+  - `Project` / `Commitment` / `Note` / `Idea` → the lower-case plural label (`projects`, `commitments`, `notes`, `ideas`).
 
 ### Search bar
 A text input — type any substring and the list narrows in real time. Title hits rank highest, then body, then tags. The search runs **client-side** over the in-memory cache, so it's instant.
@@ -21,11 +24,11 @@ Selecting a chip narrows the list. Selecting `Person` *also* unlocks the **Recal
 ### RecallQ band (Person filter only)
 A statistics row plus an actionable list — your relationship dashboard.
 
-| Stat | Meaning |
+| Stat label | Meaning |
 |---|---|
-| `orbit` | The total number of People in your brain |
-| `overdue` | Number tagged `overdue` |
-| `close-circle` | Number with the `close-circle` tag |
+| `people in orbit` | The total number of People matching the current chip + search |
+| `overdue to reach out` | Number tagged `overdue` |
+| `close circle` | Number tagged `close` or `family` |
 
 Below the stats, a **Worth a message** list shows every overdue person with their name, last-seen meta, and a chevron. Tapping a row opens that person's Detail.
 
