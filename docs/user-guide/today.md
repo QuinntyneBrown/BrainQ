@@ -33,7 +33,7 @@ Tapping a nudge opens the linked entity's Detail screen. Nudges are stateless �
 The three most recently updated entities, regardless of type. Tap any row to open Detail.
 
 ### Footer
-A faint storage status line — `BrainQ · <n> entities · <m> edges · synced …` — informational only.
+A faint storage status line — `BrainQ · <n> entities · <m> edges` — informational only. The counts are derived live from the loaded cache.
 
 ## How the data flows
 
