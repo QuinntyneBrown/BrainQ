@@ -127,7 +127,11 @@ export class InMemoryBrainQDataService implements BrainQDataService {
         .filter((e) => e.id !== id)
         .map((e) => ({ ...e, edges: e.edges.filter((edge) => edge.to !== id) })),
     );
-    this._agenda.update((a) => ({ ...a, recent: a.recent.filter((rid) => rid !== id) }));
+    this._agenda.update((a) => ({
+      ...a,
+      recent: a.recent.filter((rid) => rid !== id),
+      nudges: a.nudges.filter((n) => n.entityId !== id),
+    }));
   }
 
   addEdge(fromId: string, toId: string, kind: BqEdgeKind): void {

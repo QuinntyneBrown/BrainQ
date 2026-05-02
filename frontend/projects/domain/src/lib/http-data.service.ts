@@ -168,7 +168,11 @@ export class HttpBrainQDataService implements BrainQDataService {
         .filter((e) => e.id !== id)
         .map((e) => ({ ...e, edges: e.edges.filter((edge) => edge.to !== id) })),
     );
-    this._agenda.update((a) => ({ ...a, recent: a.recent.filter((rid) => rid !== id) }));
+    this._agenda.update((a) => ({
+      ...a,
+      recent: a.recent.filter((rid) => rid !== id),
+      nudges: a.nudges.filter((n) => n.entityId !== id),
+    }));
     this.http.delete(`${this.base}/entities/${id}`).subscribe({
       error: () => this.rollback(before),
     });
