@@ -70,6 +70,41 @@
   color: var(--bq-ink-soft);
 }
 
+.more-wrap {
+  position: relative;
+}
+
+.more-menu {
+  position: absolute;
+  top: calc(100% + var(--bq-space-2));
+  right: 0;
+  min-width: 160px;
+  padding: var(--bq-space-1);
+  background: var(--bq-bg);
+  border: 1px solid var(--bq-line);
+  border-radius: var(--bq-radius-md, 10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.more-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: var(--bq-font-sans);
+  font-size: 14px;
+  color: var(--bq-ink);
+  cursor: pointer;
+  border-radius: var(--bq-radius-sm, 6px);
+
+  &:hover {
+    background: var(--bq-bg-soft);
+  }
+}
+
 .detail-body {
   display: flex;
   flex-direction: column;

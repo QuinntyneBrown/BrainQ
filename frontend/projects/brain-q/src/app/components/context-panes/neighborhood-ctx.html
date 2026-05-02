@@ -15,8 +15,8 @@
         <text [attr.x]="centerX" [attr.y]="centerY + 4" text-anchor="middle" class="graph-center-text">
           {{ initials(e.title) }}
         </text>
-        @for (n of positioned(); track $index) {
-          <g class="graph-node" (click)="open.emit(n.id)">
+        @for (n of positioned(); track n.id) {
+          <g class="graph-node" (click)="open.emit(n.id)" [attr.data-testid]="'graph-node-' + n.id">
             <circle [attr.cx]="n.x" [attr.cy]="n.y" r="14" />
             <text [attr.x]="n.x" [attr.y]="n.y + 3" text-anchor="middle" class="graph-node-text">
               {{ initials(n.title) }}
@@ -29,8 +29,13 @@
     <div class="block">
       <div class="bq-meta bq-meta-dim">NEIGHBORS</div>
       <div class="rows">
-        @for (n of positioned(); track $index) {
-          <button class="entity-row" type="button" (click)="open.emit(n.id)">
+        @for (n of positioned(); track n.id) {
+          <button
+            class="entity-row"
+            type="button"
+            (click)="open.emit(n.id)"
+            [attr.data-testid]="'neighbor-row-' + n.id"
+          >
             <span class="glyph"><bq-type-glyph [type]="n.type" [size]="14" /></span>
             <span class="body">
               <span class="title">{{ n.title }}</span>

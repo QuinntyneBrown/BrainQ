@@ -71,7 +71,7 @@
           [title]="e.title"
           [subtitle]="e.subtitle"
           (open)="requestOpen(e.id)"
-          data-testid="brain-row"
+          [attr.data-testid]="'brain-row-' + e.id"
         />
       }
       @if (!list().length) {

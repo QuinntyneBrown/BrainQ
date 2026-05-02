@@ -2,6 +2,7 @@ import { InjectionToken, Signal } from '@angular/core';
 import {
   BqAgenda,
   BqCapturePayload,
+  BqEdgeKind,
   BqEntity,
   BqHeatmap,
   BqInboundEdge,
@@ -36,6 +37,15 @@ export interface BrainQDataService {
 
   /** Persist a new entity from the capture sheet. Returns the saved entity. */
   capture(payload: BqCapturePayload): BqEntity;
+
+  /** Remove an entity and any edges that reference it. */
+  removeEntity(id: string): void;
+
+  /** Add an outbound edge from `fromId` to `toId` of the given kind. */
+  addEdge(fromId: string, toId: string, kind: BqEdgeKind): void;
+
+  /** Remove the matching outbound edge, if present. */
+  removeEdge(fromId: string, toId: string, kind: BqEdgeKind): void;
 
   /** Increments when an optimistic capture fails and is rolled back. */
   readonly captureFailures: Signal<number>;

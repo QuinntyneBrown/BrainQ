@@ -3,6 +3,7 @@ import { BrainQDataService } from './brain-q-data.service';
 import {
   BqAgenda,
   BqCapturePayload,
+  BqEdgeKind,
   BqEntity,
   BqEntityType,
   BqHeatmap,
@@ -110,7 +111,7 @@ export class InMemoryBrainQDataService implements BrainQDataService {
   }
 
   capture(payload: BqCapturePayload): BqEntity {
-    const id = `${payload.type[0].toLowerCase()}_${Date.now().toString(36)}`;
+    const id = `${payload.type[0].toLowerCase()}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
     const entity: BqEntity = {
       id,
       type: payload.type,
@@ -127,5 +128,38 @@ export class InMemoryBrainQDataService implements BrainQDataService {
       recent: [entity.id, ...agenda.recent.filter((id) => id !== entity.id)],
     }));
     return entity;
+  }
+
+  removeEntity(id: string): void {
+    this._entities.update((xs) =>
+      xs
+        .filter((e) => e.id !== id)
+        .map((e) =>
+          e.edges.some((edge) => edge.to === id)
+            ? { ...e, edges: e.edges.filter((edge) => edge.to !== id) }
+            : e,
+        ),
+    );
+    this._agenda.update((a) => ({ ...a, recent: a.recent.filter((rid) => rid !== id) }));
+  }
+
+  addEdge(fromId: string, toId: string, kind: BqEdgeKind): void {
+    this._entities.update((xs) =>
+      xs.map((e) =>
+        e.id === fromId && !e.edges.some((edge) => edge.to === toId && edge.kind === kind)
+          ? { ...e, edges: [...e.edges, { to: toId, kind }] }
+          : e,
+      ),
+    );
+  }
+
+  removeEdge(fromId: string, toId: string, kind: BqEdgeKind): void {
+    this._entities.update((xs) =>
+      xs.map((e) =>
+        e.id === fromId
+          ? { ...e, edges: e.edges.filter((edge) => !(edge.to === toId && edge.kind === kind)) }
+          : e,
+      ),
+    );
   }
 }

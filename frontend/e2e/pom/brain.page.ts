@@ -8,7 +8,8 @@ export class BrainPage {
   goto = () => this.page.goto('/brain');
   search = () => this.page.getByTestId('brain-search');
   chip = (id: BrainChip) => this.page.getByTestId(`brain-chip-${id}`);
-  rows = () => this.page.getByTestId('brain-row');
+  rows = () => this.page.locator('[data-testid^="brain-row-"]');
+  row = (id: string) => this.page.getByTestId(`brain-row-${id}`);
   recallq = {
     band: () => this.page.getByTestId('recallq-band'),
     overdue: () =>

@@ -5,6 +5,7 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import {
   BqDetailCard,
@@ -57,6 +58,7 @@ export class DetailScreen {
   readonly heatmap = computed(() => this.data.heatmapFor(this.id()));
   readonly typeLabel = BQ_TYPE_LABEL;
   readonly edgeLabel = BQ_EDGE_LABEL;
+  readonly menuOpen = signal(false);
 
   progressPercent(p: number | undefined): number {
     return Math.round((p ?? 0) * 100);
@@ -64,5 +66,15 @@ export class DetailScreen {
 
   edgeTarget(toId: string): BqEntity | undefined {
     return this.data.byId(toId);
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update((v) => !v);
+  }
+
+  delete(): void {
+    this.menuOpen.set(false);
+    this.data.removeEntity(this.id());
+    this.back.emit();
   }
 }

@@ -1,23 +1,38 @@
 @if (entity(); as e) {
   <div class="screen detail">
     <header class="detail-head">
-      <bq-icon-button ariaLabel="Back" (click)="back.emit()">
+      <bq-icon-button ariaLabel="Back" (click)="back.emit()" data-testid="detail-back">
         <bq-icon name="back" [size]="20" [stroke]="1.4" />
       </bq-icon-button>
       <div class="head-meta">
         <bq-type-glyph [type]="e.type" [size]="12" />
         <span class="bq-meta bq-meta-dim">{{ typeLabel[e.type] }}</span>
       </div>
-      <bq-icon-button ariaLabel="More">
-        <bq-icon name="more" [size]="20" [stroke]="1.4" />
-      </bq-icon-button>
+      <div class="more-wrap">
+        <bq-icon-button ariaLabel="More" (click)="toggleMenu()" data-testid="detail-more">
+          <bq-icon name="more" [size]="20" [stroke]="1.4" />
+        </bq-icon-button>
+        @if (menuOpen()) {
+          <div class="more-menu" role="menu">
+            <button
+              type="button"
+              class="more-item"
+              role="menuitem"
+              (click)="delete()"
+              data-testid="detail-delete"
+            >
+              Delete
+            </button>
+          </div>
+        }
+      </div>
     </header>
 
     <div class="detail-body">
       @if (e.type === 'Person') {
         <bq-name-init [name]="e.title" size="lg" />
       }
-      <h1 class="bq-display">{{ e.title }}</h1>
+      <h1 class="bq-display" data-testid="detail-title">{{ e.title }}</h1>
       <span class="bq-meta bq-meta-dim">{{ e.subtitle }}</span>
 
       <p class="body-text">{{ e.body }}</p>
@@ -85,16 +100,17 @@
       }
 
       @if (e.edges.length) {
-        <section class="detail-block">
+        <section class="detail-block" data-testid="detail-connections">
           <bq-section-label>Connections</bq-section-label>
           <div class="edge-list">
-            @for (edge of e.edges; track $index) {
+            @for (edge of e.edges; track edge.to) {
               @if (edgeTarget(edge.to); as t) {
                 <bq-edge-chip
                   [kind]="edge.kind"
                   [targetType]="t.type"
                   [targetTitle]="t.title"
                   (open)="open.emit(t.id)"
+                  [attr.data-testid]="'edge-chip-' + t.id"
                 />
               }
             }
@@ -103,11 +119,16 @@
       }
 
       @if (inbound().length) {
-        <section class="detail-block">
+        <section class="detail-block" data-testid="detail-mentioned-by">
           <bq-section-label>Mentioned by</bq-section-label>
           <div class="rows">
-            @for (i of inbound(); track $index) {
-              <button class="inbound-row" type="button" (click)="open.emit(i.src.id)">
+            @for (i of inbound(); track i.src.id) {
+              <button
+                class="inbound-row"
+                type="button"
+                (click)="open.emit(i.src.id)"
+                [attr.data-testid]="'brain-row-' + i.src.id"
+              >
                 <span class="glyph"><bq-type-glyph [type]="i.src.type" [size]="14" /></span>
                 <span class="body">
                   <span class="title">{{ i.src.title }}</span>

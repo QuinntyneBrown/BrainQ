@@ -14,6 +14,7 @@ public sealed class AppDbContext : DbContext
     }
 
     public DbSet<Entity> Entities => Set<Entity>();
+    public DbSet<Edge> Edges => Set<Edge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,5 +47,14 @@ public sealed class AppDbContext : DbContext
         entity.Property(e => e.CreatedUtc).IsRequired();
         entity.Property(e => e.UpdatedUtc).IsRequired();
         entity.HasIndex(e => e.UpdatedUtc);
+
+        var edge = modelBuilder.Entity<Edge>();
+        edge.ToTable("Edge");
+        edge.HasKey(x => x.Id);
+        edge.Property(x => x.Type).HasConversion<string>().HasMaxLength(32).IsRequired();
+        edge.Property(x => x.CreatedUtc).IsRequired();
+        edge.HasIndex(x => new { x.FromEntityId, x.ToEntityId, x.Type }).IsUnique();
+        edge.HasIndex(x => x.FromEntityId);
+        edge.HasIndex(x => x.ToEntityId);
     }
 }

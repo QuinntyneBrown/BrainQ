@@ -11,6 +11,7 @@ public static class EntitiesEndpoints
         group.MapPost("", CreateAsync);
         group.MapGet("", ListAsync);
         group.MapGet("{id:guid}", GetAsync);
+        group.MapDelete("{id:guid}", DeleteAsync);
     }
 
     public sealed record CreateRequest(string? Type, string? Text);
@@ -164,6 +165,21 @@ public static class EntitiesEndpoints
         return entity is null
             ? Results.NotFound()
             : Results.Ok(EntityDto.From(entity));
+    }
+
+    private static async Task<IResult> DeleteAsync(Guid id, AppDbContext db, CancellationToken ct)
+    {
+        var entity = await db.Entities.FindAsync([id], ct);
+        if (entity is null) return Results.NotFound();
+
+        var edges = await db.Edges
+            .Where(e => e.FromEntityId == id || e.ToEntityId == id)
+            .ToListAsync(ct);
+        db.Edges.RemoveRange(edges);
+        db.Entities.Remove(entity);
+        await db.SaveChangesAsync(ct);
+
+        return Results.NoContent();
     }
 
     private static string FirstLineFrom(string text)
