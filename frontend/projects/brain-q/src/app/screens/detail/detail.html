@@ -108,20 +108,18 @@
         </bq-detail-card>
       }
 
-      @if (e.edges.length) {
+      @if (connections().length) {
         <section class="detail-block" data-testid="detail-connections">
           <bq-section-label>Connections</bq-section-label>
           <div class="edge-list">
-            @for (edge of e.edges; track edge.to) {
-              @if (edgeTarget(edge.to); as t) {
-                <bq-edge-chip
-                  [kind]="edge.kind"
-                  [targetType]="t.type"
-                  [targetTitle]="t.title"
-                  (open)="open.emit(t.id)"
-                  [attr.data-testid]="'edge-chip-' + t.id"
-                />
-              }
+            @for (c of connections(); track c.target.id) {
+              <bq-edge-chip
+                [kind]="c.edge.kind"
+                [targetType]="c.target.type"
+                [targetTitle]="c.target.title"
+                (open)="open.emit(c.target.id)"
+                [attr.data-testid]="'edge-chip-' + c.target.id"
+              />
             }
           </div>
         </section>

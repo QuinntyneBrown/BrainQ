@@ -58,6 +58,13 @@ export class DetailScreen {
       .map((inb) => ({ inb, src: this.data.byId(inb.from) }))
       .filter((x): x is { inb: (typeof x)['inb']; src: BqEntity } => !!x.src),
   );
+  readonly connections = computed(() => {
+    const e = this.entity();
+    if (!e) return [];
+    return e.edges
+      .map((edge) => ({ edge, target: this.data.byId(edge.to) }))
+      .filter((x): x is { edge: (typeof x)['edge']; target: BqEntity } => !!x.target);
+  });
   readonly heatmap = computed(() => this.data.heatmapFor(this.id()));
   readonly typeLabel = BQ_TYPE_LABEL;
   readonly edgeLabel = BQ_EDGE_LABEL;
