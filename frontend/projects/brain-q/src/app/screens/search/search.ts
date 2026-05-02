@@ -2,12 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   output,
   signal,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs/operators';
 import { BqChip, BqEntityRow, BqSearchBar, BqSectionLabel, BqSuggestion } from 'components';
-import { BqSearchMode, BRAIN_Q_DATA } from 'domain';
+import { BqEntity, BqSearchMode, BRAIN_Q_DATA } from 'domain';
 import { AppShellState } from '../../app-shell-state';
 
 const SUGGESTIONS = [
@@ -33,6 +36,14 @@ export class SearchScreen {
   readonly query = signal<string>('');
   readonly mode = signal<BqSearchMode>('structured');
 
+  /** Semantic mode hits the API; debounce so a fast typist doesn't fire one
+   * embedding+vector query per keystroke. Structured mode reads the local
+   * cache and stays immediate. */
+  private readonly debouncedQuery = toSignal(
+    toObservable(this.query).pipe(debounceTime(250)),
+    { initialValue: '' },
+  );
+
   readonly suggestions = SUGGESTIONS;
 
   readonly placeholder = computed(() =>
@@ -47,7 +58,18 @@ export class SearchScreen {
     this.mode() === 'semantic' ? 'Closest in meaning' : 'Direct matches',
   );
 
-  readonly results = computed(() => this.data.search(this.query(), this.mode()));
+  // results is signal-backed (not computed) so the fetch+signal-write inside
+  // data.search runs in an effect's allowed-write context, not a computed.
+  private readonly _results = signal<readonly BqEntity[]>([]);
+  readonly results = this._results.asReadonly();
+
+  constructor() {
+    effect(() => {
+      const m = this.mode();
+      const q = m === 'semantic' ? this.debouncedQuery() : this.query();
+      this._results.set(this.data.search(q, m));
+    });
+  }
 
   setMode(m: BqSearchMode) {
     this.mode.set(m);
