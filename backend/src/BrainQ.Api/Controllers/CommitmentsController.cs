@@ -1,29 +1,23 @@
+using BrainQ.Api.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BrainQ.Api.Endpoints;
+namespace BrainQ.Api.Controllers;
 
-public static class CommitmentsEndpoints
+[ApiController]
+[Route("api/commitments")]
+public sealed class CommitmentsController(AppDbContext db, TimeProvider clock) : ControllerBase
 {
     public sealed record LogResult(int Streak, bool TodayDone);
     public sealed record HeatmapResponse(int[][] Cells);
 
-    public static void MapCommitmentsEndpoints(this IEndpointRouteBuilder app)
-    {
-        app.MapPost("/api/commitments/{id:guid}/log", LogAsync);
-        app.MapGet("/api/commitments/{id:guid}/activity", ActivityAsync);
-        app.MapGet("/api/commitments", ListAsync);
-    }
-
-    private static async Task<IResult> LogAsync(
-        Guid id,
-        AppDbContext db,
-        TimeProvider clock,
-        CancellationToken ct)
+    [HttpPost("{id:guid}/log")]
+    public async Task<IActionResult> LogAsync(Guid id, CancellationToken ct)
     {
         var commitment = await db.Entities.FindAsync([id], ct);
         if (commitment is null || commitment.Type != EntityType.Commitment)
         {
-            return Results.NotFound();
+            return NotFound();
         }
 
         var today = TodayLocal(clock);
@@ -46,15 +40,11 @@ public static class CommitmentsEndpoints
             .Select(a => a.DateUtc)
             .OrderByDescending(d => d)
             .ToListAsync(ct);
-        return Results.Ok(new LogResult(StreakFromDates(dates, today), true));
+        return Ok(new LogResult(StreakFromDates(dates, today), true));
     }
 
-    private static async Task<IResult> ActivityAsync(
-        Guid id,
-        int? weeks,
-        AppDbContext db,
-        TimeProvider clock,
-        CancellationToken ct)
+    [HttpGet("{id:guid}/activity")]
+    public async Task<IActionResult> ActivityAsync(Guid id, [FromQuery] int? weeks, CancellationToken ct)
     {
         var weekCount = Math.Clamp(weeks ?? 18, 1, 52);
         var today = TodayLocal(clock);
@@ -74,10 +64,11 @@ public static class CommitmentsEndpoints
                 cells[w][d] = HeatBand(byDate.GetValueOrDefault(date, 0));
             }
         }
-        return Results.Ok(new HeatmapResponse(cells));
+        return Ok(new HeatmapResponse(cells));
     }
 
-    private static async Task<IResult> ListAsync(AppDbContext db, TimeProvider clock, CancellationToken ct)
+    [HttpGet]
+    public async Task<IActionResult> ListAsync(CancellationToken ct)
     {
         var commitments = await db.Entities
             .AsNoTracking()
@@ -92,10 +83,10 @@ public static class CommitmentsEndpoints
             .ToListAsync(ct);
 
         var dtos = commitments
-            .Select(c => EntitiesEndpoints.EntityDto.From(c)
+            .Select(c => EntityDto.From(c)
                 .WithCommitmentMeta(streak: StreakOf(activity, c.Id, today), todayDone: TodayDoneOf(activity, c.Id, today)))
             .ToList();
-        return Results.Ok(dtos);
+        return Ok(dtos);
     }
 
     internal static int StreakOf(IEnumerable<CommitmentActivity> activity, Guid id, DateOnly today) =>

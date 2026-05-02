@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using BrainQ.Api;
 using BrainQ.Api.Embeddings;
-using BrainQ.Api.Endpoints;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
@@ -12,10 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddJsonConsole(o => o.IncludeScopes = true);
 
 builder.Services.AddOpenApi();
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
+    });
 
 builder.Services.AddDbContext<AppDbContext>((sp, options) =>
 {
@@ -79,12 +79,7 @@ else
 
 app.UseRateLimiter();
 
-app.MapEntitiesEndpoints();
-app.MapEdgesEndpoints();
-app.MapSearchEndpoints();
-app.MapTodayEndpoints();
-app.MapCommitmentsEndpoints();
-app.MapHealthEndpoints();
+app.MapControllers();
 
 app.Run();
 

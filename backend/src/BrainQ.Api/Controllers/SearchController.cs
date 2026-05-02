@@ -1,36 +1,34 @@
+using BrainQ.Api.Contracts;
 using BrainQ.Api.Embeddings;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
-namespace BrainQ.Api.Endpoints;
+namespace BrainQ.Api.Controllers;
 
-public static class SearchEndpoints
+[ApiController]
+[Route("api/search")]
+public sealed class SearchController(AppDbContext db, IEmbeddingClient embed) : ControllerBase
 {
-    public sealed record SearchHit(EntitiesEndpoints.EntityDto Entity, double Distance);
+    public sealed record SearchHit(EntityDto Entity, double Distance);
 
-    public static void MapSearchEndpoints(this IEndpointRouteBuilder app)
-    {
-        app.MapGet("/api/search", SearchAsync);
-    }
-
-    private static async Task<IResult> SearchAsync(
-        string? q,
-        string? type,
-        int? take,
-        AppDbContext db,
-        IEmbeddingClient embed,
+    [HttpGet]
+    public async Task<IActionResult> SearchAsync(
+        [FromQuery(Name = "q")] string? q,
+        [FromQuery] string? type,
+        [FromQuery] int? take,
         CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(q))
         {
-            return Results.BadRequest(new { error = "q required" });
+            return BadRequest(new { error = "q required" });
         }
 
         var vec = await embed.EmbedAsync(q, ct);
         if (vec is null)
         {
-            return Results.Ok(Array.Empty<SearchHit>());
+            return Ok(Array.Empty<SearchHit>());
         }
 
         var query = db.Entities.AsNoTracking().Where(e => e.Embedding != null);
@@ -39,7 +37,7 @@ public static class SearchEndpoints
             if (!Enum.TryParse<EntityType>(type, ignoreCase: true, out var parsed) ||
                 !Enum.IsDefined(parsed))
             {
-                return Results.BadRequest(new { error = $"unknown type '{type}'" });
+                return BadRequest(new { error = $"unknown type '{type}'" });
             }
             query = query.Where(e => e.Type == parsed);
         }
@@ -52,6 +50,6 @@ public static class SearchEndpoints
             .Select(e => new { Entity = e, Distance = VectorDbFunctionsExtensions.CosineDistance(e.Embedding!, v) })
             .ToListAsync(ct);
 
-        return Results.Ok(rows.Select(r => new SearchHit(EntitiesEndpoints.EntityDto.From(r.Entity), r.Distance)));
+        return Ok(rows.Select(r => new SearchHit(EntityDto.From(r.Entity), r.Distance)));
     }
 }

@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BrainQ.Api.Endpoints;
+namespace BrainQ.Api.Controllers;
 
-public static class TodayEndpoints
+[ApiController]
+[Route("api/today")]
+public sealed class TodayController(AppDbContext db, TimeProvider clock) : ControllerBase
 {
     public sealed record AgendaDto(
         string Date,
@@ -13,12 +16,8 @@ public static class TodayEndpoints
 
     public sealed record NudgeDto(string Id, string Text, string Kind, string EntityId);
 
-    public static void MapTodayEndpoints(this IEndpointRouteBuilder app)
-    {
-        app.MapGet("/api/today", GetAsync);
-    }
-
-    private static async Task<IResult> GetAsync(AppDbContext db, TimeProvider clock, CancellationToken ct)
+    [HttpGet]
+    public async Task<IActionResult> GetAsync(CancellationToken ct)
     {
         var now = clock.GetLocalNow().DateTime;
         var entities = await db.Entities.AsNoTracking().ToListAsync(ct);
@@ -33,12 +32,12 @@ public static class TodayEndpoints
             .Where(e => e.Type == EntityType.Person && e.Tags.Contains("overdue"))
             .Select(p => new NudgeDto(
                 Guid.NewGuid().ToString(),
-                $"{p.Title} — worth a message.",
+                $"{p.Title} \u2014 worth a message.",
                 "soft",
                 p.Id.ToString()))
             .ToArray();
 
-        return Results.Ok(new AgendaDto(
+        return Ok(new AgendaDto(
             Date: now.ToString("dddd, MMM d"),
             Greeting: GreetingFor(now),
             Prompt: "What's on your mind?",
