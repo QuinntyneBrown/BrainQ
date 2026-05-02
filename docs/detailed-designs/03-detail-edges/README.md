@@ -1,5 +1,7 @@
 # Slice 03 — Entity Detail + Edges
 
+**Status:** Accepted (2026-05-02)
+
 **Traces to:** L2-002, L2-003 (GET id, DELETE), L2-004, L2-026
 
 ## 1. Overview

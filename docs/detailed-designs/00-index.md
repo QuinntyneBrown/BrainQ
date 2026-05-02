@@ -9,7 +9,7 @@ Start with **[shared/README.md](shared/README.md)** for the system-wide architec
 | — | [Shared Architecture](shared/README.md) | Draft | L1-001, L1-007, L1-008, L1-012, L2-020 | System context, container, domain model, frontend↔backend split |
 | 01 | [Entity Capture](01-capture/README.md) | Draft | L2-001, L2-003, L2-011, L2-024, L2-015 | Capture sheet → POST /api/entities, type inference, suggested links |
 | 02 | [Entity Browse](02-browse/README.md) | Draft | L2-003, L2-005, L2-009, L2-027, L2-010 | Brain screen filter chips, structured query, RecallQ band |
-| 03 | [Entity Detail + Edges](03-detail-edges/README.md) | Draft | L2-002, L2-003, L2-004, L2-026 | Detail screen, edge chips, Mentioned-by, Neighborhood pane |
+| 03 | [Entity Detail + Edges](03-detail-edges/README.md) | Accepted | L2-002, L2-003, L2-004, L2-026 | Detail screen, edge chips, Mentioned-by, Neighborhood pane |
 | 04 | [Semantic Search](04-semantic-search/README.md) | Draft | L2-006, L2-007, L2-012 | Embedding generation, GET /api/search, structured/semantic toggle |
 | 05 | [Today Surface](05-today/README.md) | Draft | L2-022, L1-013 | Today screen agenda, nudges, recently touched |
 | 06 | [Commitment Activity](06-commitment-activity/README.md) | Draft | L2-008, L2-023 | CommitmentActivity table, log endpoint, derived streak + heatmap |
