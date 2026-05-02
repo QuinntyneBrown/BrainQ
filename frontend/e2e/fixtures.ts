@@ -41,7 +41,8 @@ export const test = base.extend<{
   api: APIRequestContext;
 }>({
   api: async ({ playwright }, use) => {
-    const ctx = await playwright.request.newContext({ baseURL: 'http://localhost:5000' });
+    const baseURL = process.env['BRAINQ_API_URL'] ?? 'http://localhost:5159';
+    const ctx = await playwright.request.newContext({ baseURL });
     await use(ctx);
     await ctx.dispose();
   },
