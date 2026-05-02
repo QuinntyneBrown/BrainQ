@@ -22,9 +22,14 @@
   color: var(--bq-ink);
   padding: 8px 0;
   border-bottom: 1px solid var(--bq-line-soft);
+  transition: border-bottom-color var(--bq-duration-fast) ease;
 
   &::placeholder {
     color: var(--bq-ink-dim);
+  }
+
+  &:focus-visible {
+    border-bottom-color: var(--bq-accent);
   }
 }
 
