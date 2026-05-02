@@ -1,0 +1,34 @@
+/* BrainQ — global styles */
+@use '../../components/src/styles/tokens.scss';
+@use '../../components/src/styles/base.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+app-root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bq-bg);
+  color: var(--bq-ink);
+  font-family: var(--bq-font-sans);
+  font-size: var(--bq-step-2);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}

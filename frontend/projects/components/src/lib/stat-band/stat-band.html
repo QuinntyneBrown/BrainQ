@@ -1,0 +1,8 @@
+<div class="band">
+  @for (s of stats(); track s.label) {
+    <div class="stat">
+      <div class="value">{{ s.value }}</div>
+      <div class="label">{{ s.label }}</div>
+    </div>
+  }
+</div>

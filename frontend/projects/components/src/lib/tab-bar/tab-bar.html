@@ -1,0 +1,29 @@
+<nav class="tabbar" role="tablist">
+  @for (it of items(); track it.id) {
+    @if (it.capture) {
+      <button
+        class="tab tab-capture"
+        type="button"
+        [attr.aria-label]="it.label"
+        (click)="capture.emit()"
+      >
+        <span class="capture-disk">
+          <bq-icon [name]="it.icon" [size]="20" [stroke]="1.6" />
+        </span>
+        <span class="label">{{ it.label }}</span>
+      </button>
+    } @else {
+      <button
+        class="tab"
+        type="button"
+        role="tab"
+        [class.is-active]="active() === it.id"
+        [attr.aria-current]="active() === it.id ? 'page' : null"
+        (click)="select(it.id)"
+      >
+        <bq-icon [name]="it.icon" [size]="20" [stroke]="1.4" />
+        <span class="label">{{ it.label }}</span>
+      </button>
+    }
+  }
+</nav>

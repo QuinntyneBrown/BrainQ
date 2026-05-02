@@ -1,0 +1,25 @@
+:host {
+  display: contents;
+}
+
+/* Hidden below xl — context lives in the stage on smaller screens */
+.ctx {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .ctx {
+    grid-area: ctx;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bq-space-6);
+    padding: var(--bq-space-6) var(--bq-space-5);
+    border-left: 1px solid var(--bq-line-soft);
+    background: var(--bq-bg);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+}

@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 14px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--bq-line-soft);
+  cursor: pointer;
+  text-align: left;
+  color: var(--bq-ink);
+  font-family: var(--bq-font-sans);
+  font-weight: 450;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  transition: background var(--bq-duration-fast) ease;
+  width: 100%;
+
+  &:hover {
+    background: var(--bq-bg-soft);
+  }
+}
+
+bq-icon {
+  color: var(--bq-accent);
+  flex: none;
+}

@@ -1,0 +1,57 @@
+<div class="screen">
+  <header class="head">
+    <span class="bq-meta bq-meta-dim">YOUR BRAIN</span>
+    <h1 class="bq-display-sm">{{ heading() }}</h1>
+  </header>
+
+  <bq-search-bar [value]="query()" (valueChange)="query.set($event)" [placeholder]="placeholder()" />
+
+  <div class="chip-row scroll">
+    <bq-chip [active]="filter() === 'All'" (click)="setFilter('All')" [count]="countOf('All')">
+      all
+    </bq-chip>
+    @for (t of types; track t) {
+      <bq-chip [active]="filter() === t" [glyph]="t" [count]="countOf(t)" (click)="setFilter(t)">
+        {{ typeLabel[t] }}s
+      </bq-chip>
+    }
+  </div>
+
+  @if (filter() === 'Person') {
+    <div class="recallq">
+      <bq-stat-band [stats]="recallqStats()" />
+      @if (overdue().length) {
+        <div class="overdue">
+          <span class="bq-meta">Worth a message</span>
+          @for (p of overdue(); track p.id) {
+            <button class="overdue-row" type="button" (click)="requestOpen(p.id)">
+              <bq-name-init [name]="p.title" size="md" />
+              <span class="overdue-text">
+                <span class="entity-title">{{ p.title }}</span>
+                <span class="entity-sub">last seen {{ p.meta.lastSeen }}</span>
+              </span>
+              <bq-icon name="arrow" [size]="14" [stroke]="1.2" />
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <section class="block">
+    <bq-section-label [count]="list().length">{{ sortLabel() }}</bq-section-label>
+    <div class="rows">
+      @for (e of list(); track e.id) {
+        <bq-entity-row
+          [type]="e.type"
+          [title]="e.title"
+          [subtitle]="e.subtitle"
+          (open)="requestOpen(e.id)"
+        />
+      }
+      @if (!list().length) {
+        <div class="empty"><span class="bq-meta bq-meta-dim">No matches. Try capturing it.</span></div>
+      }
+    </div>
+  </section>
+</div>

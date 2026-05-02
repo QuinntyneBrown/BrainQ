@@ -1,0 +1,7 @@
+<button class="prompt" type="button" (click)="capture.emit()">
+  <span class="text">{{ text() }}</span>
+  <span class="hint">
+    <span class="hint-meta">{{ hint() }}</span>
+    <bq-icon name="arrow" [size]="14" [stroke]="1.2" />
+  </span>
+</button>

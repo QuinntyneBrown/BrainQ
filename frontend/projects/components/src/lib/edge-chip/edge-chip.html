@@ -1,0 +1,14 @@
+<button
+  class="edge"
+  type="button"
+  [class.is-static]="isStatic()"
+  [disabled]="isStatic()"
+  (click)="open.emit()"
+>
+  @if (kind(); as k) {
+    <span class="kind">{{ kindLabel(k) }}</span>
+    <span class="arrow">→</span>
+  }
+  <span class="glyph"><bq-type-glyph [type]="targetType()" [size]="11" /></span>
+  <span class="title">{{ targetTitle() }}</span>
+</button>

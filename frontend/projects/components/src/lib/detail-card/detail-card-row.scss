@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bq-space-3);
+}
+
+:host ::ng-deep .row > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-1);
+}

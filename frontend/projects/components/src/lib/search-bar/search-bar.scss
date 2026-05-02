@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 10px 14px;
+  background: var(--bq-bg-soft);
+  border: 1px solid var(--bq-line-soft);
+  border-radius: var(--bq-radius-pill);
+  color: var(--bq-ink-soft);
+
+  &.is-lg {
+    padding: 14px 16px;
+  }
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--bq-ink);
+  font-family: var(--bq-font-sans);
+  font-size: 15px;
+  min-width: 0;
+
+  &::placeholder {
+    color: var(--bq-ink-dim);
+  }
+}
+
+::ng-deep [bqSearchHint] {
+  margin-left: auto;
+}

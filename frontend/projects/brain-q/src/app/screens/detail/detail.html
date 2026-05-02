@@ -1,0 +1,124 @@
+@if (entity(); as e) {
+  <div class="screen detail">
+    <header class="detail-head">
+      <bq-icon-button ariaLabel="Back" (click)="back.emit()">
+        <bq-icon name="back" [size]="20" [stroke]="1.4" />
+      </bq-icon-button>
+      <div class="head-meta">
+        <bq-type-glyph [type]="e.type" [size]="12" />
+        <span class="bq-meta bq-meta-dim">{{ typeLabel[e.type] }}</span>
+      </div>
+      <bq-icon-button ariaLabel="More">
+        <bq-icon name="more" [size]="20" [stroke]="1.4" />
+      </bq-icon-button>
+    </header>
+
+    <div class="detail-body">
+      @if (e.type === 'Person') {
+        <bq-name-init [name]="e.title" size="lg" />
+      }
+      <h1 class="bq-display">{{ e.title }}</h1>
+      <span class="bq-meta bq-meta-dim">{{ e.subtitle }}</span>
+
+      <p class="body-text">{{ e.body }}</p>
+
+      @if (e.type === 'Commitment') {
+        <bq-detail-card>
+          <bq-detail-card-row>
+            <div>
+              <span class="bq-meta bq-meta-dim">streak</span>
+              <div class="bq-display-num">{{ e.meta.streak }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">today</span>
+              <div class="bq-display-num">{{ e.meta.todayDone ? '✓' : '—' }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">target</span>
+              <div class="bq-display-num">
+                {{ e.meta.target }}<span class="bq-display-num-unit"> {{ e.meta.unit }}</span>
+              </div>
+            </div>
+          </bq-detail-card-row>
+          <bq-heatmap [data]="heatmap()" />
+          <div class="heatmap-caption"><span class="bq-meta bq-meta-dim">last 18 weeks · darker = more</span></div>
+        </bq-detail-card>
+      }
+
+      @if (e.type === 'Person') {
+        <bq-detail-card>
+          <bq-detail-card-row>
+            <div>
+              <span class="bq-meta bq-meta-dim">last seen</span>
+              <div class="bq-stat-mid">{{ e.meta.lastSeen }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">touchpoints</span>
+              <div class="bq-stat-mid">{{ e.meta.touchpoints }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">relationship</span>
+              <div class="bq-stat-mid">{{ e.meta.relationship }}</div>
+            </div>
+          </bq-detail-card-row>
+        </bq-detail-card>
+      }
+
+      @if (e.type === 'Project') {
+        <bq-detail-card>
+          <bq-detail-card-row>
+            <div>
+              <span class="bq-meta bq-meta-dim">status</span>
+              <div class="bq-stat-mid">{{ e.meta.status }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">due</span>
+              <div class="bq-stat-mid">{{ e.meta.due }}</div>
+            </div>
+            <div>
+              <span class="bq-meta bq-meta-dim">progress</span>
+              <div class="bq-stat-mid">{{ progressPercent(e.meta.progress) }}%</div>
+            </div>
+          </bq-detail-card-row>
+          <bq-progress-bar [value]="e.meta.progress ?? 0" />
+        </bq-detail-card>
+      }
+
+      @if (e.edges.length) {
+        <section class="detail-block">
+          <bq-section-label>Connections</bq-section-label>
+          <div class="edge-list">
+            @for (edge of e.edges; track $index) {
+              @if (edgeTarget(edge.to); as t) {
+                <bq-edge-chip
+                  [kind]="edge.kind"
+                  [targetType]="t.type"
+                  [targetTitle]="t.title"
+                  (open)="open.emit(t.id)"
+                />
+              }
+            }
+          </div>
+        </section>
+      }
+
+      @if (inbound().length) {
+        <section class="detail-block">
+          <bq-section-label>Mentioned by</bq-section-label>
+          <div class="rows">
+            @for (i of inbound(); track $index) {
+              <button class="inbound-row" type="button" (click)="open.emit(i.src.id)">
+                <span class="glyph"><bq-type-glyph [type]="i.src.type" [size]="14" /></span>
+                <span class="body">
+                  <span class="title">{{ i.src.title }}</span>
+                  <span class="sub">via {{ edgeLabel[i.inb.kind] }}</span>
+                </span>
+                <span class="chev"><bq-icon name="arrow" [size]="14" [stroke]="1.2" /></span>
+              </button>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,31 @@
+<aside class="rail" aria-label="Primary">
+  <div class="brand">
+    <span class="mark">{{ brandMark() }}</span>
+    <span class="wordmark">{{ brandName() }}</span>
+  </div>
+
+  <button class="capture-btn" type="button" (click)="capture.emit()">
+    <bq-icon name="capture" [size]="16" [stroke]="1.6" />
+    <span>{{ captureLabel() }}</span>
+    <span class="kbd">{{ captureKbd() }}</span>
+  </button>
+
+  <nav class="nav">
+    @for (it of items(); track it.id) {
+      <button
+        type="button"
+        class="item"
+        [class.is-active]="active() === it.id"
+        [attr.aria-current]="active() === it.id ? 'page' : null"
+        (click)="select(it.id)"
+      >
+        <bq-icon [name]="it.icon" [size]="18" [stroke]="1.4" />
+        <span>{{ it.label }}</span>
+      </button>
+    }
+  </nav>
+
+  <div class="meta">
+    <ng-content select="[bqRailFooter]" />
+  </div>
+</aside>

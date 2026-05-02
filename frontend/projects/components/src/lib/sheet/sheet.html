@@ -1,0 +1,8 @@
+@if (open()) {
+  <div class="backdrop" (click)="closeSheet()">
+    <div class="sheet" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="handle" aria-hidden="true"></div>
+      <ng-content />
+    </div>
+  </div>
+}

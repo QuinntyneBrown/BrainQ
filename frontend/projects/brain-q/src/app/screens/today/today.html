@@ -1,0 +1,58 @@
+<div class="screen">
+  <header class="head">
+    <span class="bq-meta bq-meta-dim">{{ dateUpper() }}</span>
+    <h1 class="bq-display">{{ agenda().greeting }}.</h1>
+  </header>
+
+  <bq-capture-prompt [text]="agenda().prompt" (capture)="requestCapture()" />
+
+  <section class="block">
+    <bq-section-label [count]="commitments().length">Commitments</bq-section-label>
+    <div class="commit-grid">
+      @for (c of commitments(); track c.id) {
+        <bq-commitment-cell
+          [title]="c.title"
+          [streak]="c.meta.streak ?? 0"
+          [cadence]="c.meta.cadence ?? ''"
+          [value]="commitValue(c.meta.todayDone)"
+          [done]="!!c.meta.todayDone"
+          (open)="requestOpen(c.id)"
+        />
+      }
+    </div>
+  </section>
+
+  @if (agenda().nudges.length) {
+    <section class="block">
+      <bq-section-label>On your mind</bq-section-label>
+      <ul class="nudges">
+        @for (n of nudges(); track n.nudge.id) {
+          <bq-nudge
+            [text]="n.nudge.text"
+            [entityType]="n.entity ? n.entity.type : null"
+            [entityTitle]="n.entity ? n.entity.title : ''"
+            (open)="requestOpen(n.nudge.entityId)"
+          />
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="block">
+    <bq-section-label>Recently touched</bq-section-label>
+    <div class="rows">
+      @for (e of recent(); track e.id) {
+        <bq-entity-row
+          [type]="e.type"
+          [title]="e.title"
+          [subtitle]="e.subtitle"
+          (open)="requestOpen(e.id)"
+        />
+      }
+    </div>
+  </section>
+
+  <footer class="footnote">
+    <span class="bq-meta bq-meta-dim">BrainQ · 18 entities · 23 edges · synced 2 min ago</span>
+  </footer>
+</div>

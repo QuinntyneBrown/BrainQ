@@ -1,0 +1,29 @@
+<bq-ctx-pane bqCtx ariaLabel="Context">
+  <div class="block">
+    <div class="bq-meta bq-meta-dim">EDGE TYPES</div>
+    <div class="edges">
+      @for (k of edgeKinds; track k) {
+        <div class="edge-row">
+          <span class="edge-marker" [class]="'em-' + k"></span>
+          <span class="edge-label">{{ edgeLabel(k) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="bq-meta bq-meta-dim">MOST CONNECTED</div>
+    <div class="rows">
+      @for (row of leaderboard(); track row.id) {
+        <button class="entity-row" type="button" (click)="open.emit(row.id)">
+          <span class="glyph"><bq-type-glyph [type]="row.type" [size]="14" /></span>
+          <span class="body">
+            <span class="title">{{ row.title }}</span>
+            <span class="bq-meta bq-meta-dim">{{ row.total }} connections</span>
+          </span>
+          <span class="chev"><bq-icon name="arrow" [size]="14" [stroke]="1.2" /></span>
+        </button>
+      }
+    </div>
+  </div>
+</bq-ctx-pane>

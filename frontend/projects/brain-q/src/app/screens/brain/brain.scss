@@ -1,0 +1,127 @@
+:host {
+  display: contents;
+}
+
+.screen {
+  padding: 28px var(--bq-pad) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-6);
+}
+
+@media (min-width: 640px) {
+  .screen {
+    padding: 36px 32px 24px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .screen {
+    padding: 44px 48px 40px;
+    gap: var(--bq-space-7);
+  }
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+}
+
+.chip-row {
+  display: flex;
+  gap: var(--bq-space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chip-row.scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.recallq {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.overdue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+}
+
+.overdue-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 12px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--bq-line-soft);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background var(--bq-duration-fast) ease;
+  font-family: var(--bq-font-sans);
+  color: var(--bq-ink-dim);
+
+  &:hover {
+    background: var(--bq-bg-soft);
+  }
+}
+
+.overdue-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.entity-title {
+  font-family: var(--bq-font-sans);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--bq-ink);
+}
+
+.entity-sub {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bq-ink-dim);
+  font-weight: 400;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1280px) {
+  .rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--bq-space-6);
+  }
+}
+
+.empty {
+  padding: 24px 4px;
+}

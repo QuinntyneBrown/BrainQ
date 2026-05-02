@@ -1,0 +1,53 @@
+<bq-ctx-pane bqCtx ariaLabel="Context">
+  <div class="block">
+    <div class="bq-meta bq-meta-dim">SHAPE OF YOUR BRAIN</div>
+    <div class="shape">
+      @for (row of shape(); track row.type) {
+        <div class="shape-row">
+          <span class="glyph"><bq-type-glyph [type]="row.type" [size]="12" /></span>
+          <span class="shape-label">{{ row.label }}s</span>
+          <span class="shape-bar"><span [style.width.%]="row.fillPct"></span></span>
+          <span class="bq-meta">{{ row.count }}</span>
+        </div>
+      }
+    </div>
+    <div class="edge-count">
+      <span class="bq-display-num">{{ totalEdges() }}</span>
+      <span class="bq-meta bq-meta-dim">typed edges across the graph</span>
+    </div>
+  </div>
+
+  @if (warmIdeas().length) {
+    <div class="block">
+      <div class="bq-meta bq-meta-dim">WARM IDEAS</div>
+      <div class="rows">
+        @for (e of warmIdeas(); track e.id) {
+          <bq-entity-row
+            [type]="e.type"
+            [title]="e.title"
+            [subtitle]="e.subtitle"
+            [dense]="true"
+            (open)="open.emit(e.id)"
+          />
+        }
+      </div>
+    </div>
+  }
+
+  @if (overdue().length) {
+    <div class="block">
+      <div class="bq-meta bq-meta-dim">QUIET CIRCLES</div>
+      <div class="rows">
+        @for (e of overdue(); track e.id) {
+          <bq-entity-row
+            [type]="e.type"
+            [title]="e.title"
+            [subtitle]="e.subtitle"
+            [dense]="true"
+            (open)="open.emit(e.id)"
+          />
+        }
+      </div>
+    </div>
+  }
+</bq-ctx-pane>

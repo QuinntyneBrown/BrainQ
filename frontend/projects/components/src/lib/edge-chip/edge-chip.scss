@@ -1,0 +1,50 @@
+:host {
+  display: inline-flex;
+}
+
+.edge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bq-space-2);
+  padding: 8px 12px;
+  background: var(--bq-bg-soft);
+  border: 1px solid var(--bq-line-soft);
+  border-radius: var(--bq-radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--bq-duration-fast) ease;
+  font-family: var(--bq-font-sans);
+
+  &:hover:not(:disabled) {
+    border-color: var(--bq-line);
+  }
+
+  &.is-static {
+    cursor: default;
+  }
+}
+
+.kind {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bq-ink-dim);
+  font-weight: 400;
+}
+
+.arrow {
+  color: var(--bq-ink-dim);
+}
+
+.glyph {
+  color: var(--bq-ink-soft);
+  display: inline-flex;
+}
+
+.title {
+  font-weight: 450;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  color: var(--bq-ink);
+}

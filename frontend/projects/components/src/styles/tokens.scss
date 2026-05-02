@@ -1,0 +1,92 @@
+/* BrainQ design tokens — calm minimal, monochrome + one accent. */
+
+:root {
+  /* ── Surfaces ───────────────────────────────────────────── */
+  --bq-bg: oklch(0.985 0.004 80);
+  --bq-bg-soft: oklch(0.965 0.005 80);
+  --bq-card: oklch(0.99 0.003 80);
+
+  /* ── Lines ──────────────────────────────────────────────── */
+  --bq-line: oklch(0.88 0.006 80);
+  --bq-line-soft: oklch(0.93 0.005 80);
+
+  /* ── Ink (foreground) ───────────────────────────────────── */
+  --bq-ink: oklch(0.20 0.01 80);
+  --bq-ink-soft: oklch(0.42 0.008 80);
+  --bq-ink-dim: oklch(0.58 0.006 80);
+
+  /* ── Accent (default: terracotta) ───────────────────────── */
+  --bq-accent: oklch(0.62 0.13 40);
+  --bq-accent-soft: oklch(0.92 0.045 40);
+  --bq-accent-ink: oklch(0.42 0.13 40);
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --bq-font-sans: "Inter Tight", system-ui, sans-serif;
+  --bq-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --bq-serif-weight: 380;
+
+  /* Type scale */
+  --bq-step-1: 13px;
+  --bq-step-2: 15px;
+  --bq-step-3: 18px;
+  --bq-step-display-sm: 28px;
+  --bq-step-display: 36px;
+  --bq-step-display-lg: 56px;
+
+  /* ── Spacing ────────────────────────────────────────────── */
+  --bq-space-1: 4px;
+  --bq-space-2: 8px;
+  --bq-space-3: 12px;
+  --bq-space-4: 16px;
+  --bq-space-5: 20px;
+  --bq-space-6: 28px;
+  --bq-space-7: 36px;
+  --bq-pad: 20px;
+
+  /* ── Radii ──────────────────────────────────────────────── */
+  --bq-radius-sm: 10px;
+  --bq-radius: 14px;
+  --bq-radius-lg: 22px;
+  --bq-radius-pill: 100px;
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --bq-duration-fast: 140ms;
+  --bq-duration: 240ms;
+  --bq-ease: cubic-bezier(.2, .8, .2, 1);
+
+  /* ── Layers ─────────────────────────────────────────────── */
+  --bq-z-tabbar: 30;
+  --bq-z-overlay: 20;
+  --bq-z-sheet: 60;
+  --bq-z-toast: 80;
+}
+
+/* ── Theme: sepia ─────────────────────────────────────────── */
+[data-theme="sepia"] {
+  --bq-bg: oklch(0.95 0.018 80);
+  --bq-bg-soft: oklch(0.92 0.022 80);
+  --bq-card: oklch(0.965 0.014 80);
+  --bq-line: oklch(0.83 0.022 80);
+  --bq-line-soft: oklch(0.88 0.018 80);
+  --bq-ink: oklch(0.26 0.022 60);
+  --bq-ink-soft: oklch(0.45 0.018 60);
+  --bq-ink-dim: oklch(0.6 0.014 60);
+}
+
+/* ── Theme: dark ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bq-bg: oklch(0.18 0.006 80);
+  --bq-bg-soft: oklch(0.22 0.006 80);
+  --bq-card: oklch(0.23 0.006 80);
+  --bq-line: oklch(0.32 0.008 80);
+  --bq-line-soft: oklch(0.27 0.008 80);
+  --bq-ink: oklch(0.94 0.005 80);
+  --bq-ink-soft: oklch(0.74 0.006 80);
+  --bq-ink-dim: oklch(0.55 0.006 80);
+}
+
+/* ── Density: compact ─────────────────────────────────────── */
+[data-density="compact"] {
+  --bq-pad: 16px;
+  --bq-step-2: 14px;
+}

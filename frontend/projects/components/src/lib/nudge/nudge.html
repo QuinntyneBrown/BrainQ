@@ -1,0 +1,10 @@
+<li class="nudge" (click)="open.emit()">
+  <span class="mark"></span>
+  <span class="text">{{ text() }}</span>
+  @if (entityType(); as t) {
+    <span class="tail">
+      <bq-type-glyph [type]="t" [size]="11" />
+      <span class="entity">{{ entityTitle() }}</span>
+    </span>
+  }
+</li>

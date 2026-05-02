@@ -1,0 +1,53 @@
+/* BrainQ base — typography utility classes (host-page or :host) */
+
+.bq-display,
+.bq-display-sm,
+.bq-display-num {
+  font-family: var(--bq-font-sans);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.bq-display { font-size: var(--bq-step-display); line-height: 1.08; }
+.bq-display-sm { font-size: var(--bq-step-display-sm); line-height: 1.12; }
+.bq-display-num { font-size: 32px; line-height: 1; }
+
+.bq-display-num-unit {
+  font-size: 14px;
+  font-family: var(--bq-font-mono);
+  color: var(--bq-ink-dim);
+  font-weight: 400;
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+
+.bq-stat-mid {
+  font-family: var(--bq-font-sans);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.bq-meta {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bq-ink-soft);
+  font-weight: 450;
+}
+
+.bq-meta-dim { color: var(--bq-ink-dim); font-weight: 400; }
+
+@media (min-width: 640px) {
+  .bq-display { font-size: 44px; }
+  .bq-display-sm { font-size: 32px; }
+}
+
+@media (min-width: 1280px) {
+  .bq-display { font-size: 52px; }
+  .bq-display-sm { font-size: 36px; }
+}

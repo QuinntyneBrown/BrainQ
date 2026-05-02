@@ -1,0 +1,29 @@
+<bq-ctx-pane bqCtx ariaLabel="Context">
+  <div class="block">
+    <div class="bq-meta bq-meta-dim">QUERY MODES</div>
+    <div class="mode">
+      <div class="mode-name">structured</div>
+      <p class="mode-desc">
+        Direct EF Core queries against indexed columns — title, body, tags, edge kinds.
+        Fast, deterministic, no embedding round-trip.
+      </p>
+    </div>
+    <div class="mode">
+      <div class="mode-name">semantic</div>
+      <p class="mode-desc">
+        pgvector cosine similarity against the embedding column. Finds things you remember
+        by feel rather than by word.
+      </p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="bq-meta bq-meta-dim">OPERATORS</div>
+    <ul class="ops">
+      <li><span class="mono-tag">type:person</span><span>filter to one entity type</span></li>
+      <li><span class="mono-tag">tag:work</span><span>match a tag</span></li>
+      <li><span class="mono-tag">~30 days</span><span>recency window</span></li>
+      <li><span class="mono-tag">→ project</span><span>edge to type</span></li>
+    </ul>
+  </div>
+</bq-ctx-pane>

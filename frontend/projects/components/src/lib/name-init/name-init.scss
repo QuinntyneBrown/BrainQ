@@ -1,0 +1,32 @@
+:host {
+  display: inline-flex;
+}
+
+.init {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bq-accent-soft);
+  color: var(--bq-accent-ink);
+  font-family: var(--bq-font-sans);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  flex: none;
+
+  &[data-size='sm'] {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  &[data-size='md'] {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  &[data-size='lg'] {
+    width: 64px;
+    height: 64px;
+    font-size: 20px;
+  }
+}

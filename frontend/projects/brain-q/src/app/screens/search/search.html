@@ -1,0 +1,48 @@
+<div class="screen">
+  <header class="head">
+    <span class="bq-meta bq-meta-dim">SEARCH</span>
+    <h1 class="bq-display-sm">Find anything you’ve thought about.</h1>
+  </header>
+
+  <bq-search-bar
+    size="lg"
+    [value]="query()"
+    (valueChange)="query.set($event)"
+    [placeholder]="placeholder()"
+    [autofocus]="true"
+  />
+
+  <div class="chip-row">
+    <bq-chip [active]="mode() === 'structured'" (click)="setMode('structured')">structured</bq-chip>
+    <bq-chip [active]="mode() === 'semantic'" (click)="setMode('semantic')">semantic</bq-chip>
+    <span class="hint"><span class="bq-meta bq-meta-dim">{{ hint() }}</span></span>
+  </div>
+
+  @if (!query().trim()) {
+    <section class="block">
+      <bq-section-label>Try</bq-section-label>
+      <div class="suggestion-list">
+        @for (s of suggestions; track s) {
+          <bq-suggestion (select)="pickSuggestion(s)">{{ s }}</bq-suggestion>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="block">
+      <bq-section-label [count]="results().length">{{ resultsLabel() }}</bq-section-label>
+      <div class="rows">
+        @for (e of results(); track e.id) {
+          <bq-entity-row
+            [type]="e.type"
+            [title]="e.title"
+            [subtitle]="e.subtitle"
+            (open)="requestOpen(e.id)"
+          />
+        }
+        @if (!results().length) {
+          <div class="empty"><span class="bq-meta bq-meta-dim">Nothing yet. Try different words.</span></div>
+        }
+      </div>
+    </section>
+  }
+</div>

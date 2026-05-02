@@ -1,0 +1,29 @@
+<svg
+  [attr.width]="size()"
+  [attr.height]="size()"
+  class="ring"
+  [class.is-accent]="accented()"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle
+    [attr.cx]="size() / 2"
+    [attr.cy]="size() / 2"
+    [attr.r]="radius()"
+    class="ring-track"
+    [attr.stroke-width]="stroke()"
+    fill="none"
+  />
+  <circle
+    [attr.cx]="size() / 2"
+    [attr.cy]="size() / 2"
+    [attr.r]="radius()"
+    class="ring-fill"
+    [attr.stroke-width]="stroke()"
+    fill="none"
+    [attr.stroke-dasharray]="circumference()"
+    [attr.stroke-dashoffset]="offset()"
+    stroke-linecap="round"
+    [attr.transform]="'rotate(-90 ' + (size() / 2) + ' ' + (size() / 2) + ')'"
+  />
+</svg>

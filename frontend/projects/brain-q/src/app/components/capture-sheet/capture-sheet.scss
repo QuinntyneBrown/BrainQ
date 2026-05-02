@@ -1,0 +1,73 @@
+:host {
+  display: contents;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.capture-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: none;
+  font-family: var(--bq-font-sans);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  color: var(--bq-ink);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--bq-line-soft);
+
+  &::placeholder {
+    color: var(--bq-ink-dim);
+  }
+}
+
+.capture-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+}
+
+.detected {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bq-space-2);
+  padding: 4px 10px;
+  border-radius: var(--bq-radius-pill);
+  background: var(--bq-accent-soft);
+  color: var(--bq-accent-ink);
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.chip-row {
+  display: flex;
+  gap: var(--bq-space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.suggested {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-2);
+}
+
+.suggested-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bq-space-2);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--bq-space-3);
+}

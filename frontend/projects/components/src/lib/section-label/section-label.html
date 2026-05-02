@@ -1,0 +1,11 @@
+<div class="section-label">
+  <span class="label">
+    <ng-content />
+  </span>
+  @if (count() != null) {
+    <span class="count">{{ count() }}</span>
+  }
+  <span class="action">
+    <ng-content select="[bqSectionAction]" />
+  </span>
+</div>

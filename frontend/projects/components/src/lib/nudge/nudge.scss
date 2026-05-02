@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.nudge {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--bq-line-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bq-accent);
+  flex: none;
+}
+
+.text {
+  font-family: var(--bq-font-sans);
+  font-weight: 450;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  color: var(--bq-ink);
+  flex: 1;
+}
+
+.tail {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-2);
+  color: var(--bq-ink-dim);
+}
+
+.entity {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 400;
+}

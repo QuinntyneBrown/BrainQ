@@ -1,0 +1,17 @@
+<button
+  class="row"
+  type="button"
+  [class.is-dense]="dense()"
+  (click)="open.emit()"
+>
+  <span class="glyph">
+    <bq-type-glyph [type]="type()" [size]="14" />
+  </span>
+  <span class="body">
+    <span class="title">{{ title() }}</span>
+    <span class="sub">{{ typeLabel() }}{{ subtitle() ? ' · ' + subtitle() : '' }}</span>
+  </span>
+  <span class="chev">
+    <bq-icon name="arrow" [size]="14" [stroke]="1.2" />
+  </span>
+</button>

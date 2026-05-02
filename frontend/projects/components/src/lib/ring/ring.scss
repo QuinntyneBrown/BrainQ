@@ -1,0 +1,16 @@
+:host {
+  display: inline-flex;
+}
+
+.ring-track {
+  stroke: var(--bq-line);
+}
+
+.ring-fill {
+  stroke: var(--bq-ink);
+  transition: stroke-dashoffset 400ms ease;
+}
+
+.ring.is-accent .ring-fill {
+  stroke: var(--bq-accent);
+}

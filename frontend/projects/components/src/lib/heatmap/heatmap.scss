@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.heatmap {
+  display: flex;
+  gap: 3px;
+  padding: 4px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--bq-line-soft);
+  flex: none;
+
+  &[data-level='1'] {
+    background: color-mix(in oklch, var(--bq-accent) 22%, var(--bq-line-soft));
+  }
+  &[data-level='2'] {
+    background: color-mix(in oklch, var(--bq-accent) 45%, var(--bq-line-soft));
+  }
+  &[data-level='3'] {
+    background: color-mix(in oklch, var(--bq-accent) 75%, var(--bq-line-soft));
+  }
+  &[data-level='4'] {
+    background: var(--bq-accent);
+  }
+}

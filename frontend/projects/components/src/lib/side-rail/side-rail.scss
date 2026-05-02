@@ -1,0 +1,141 @@
+:host {
+  display: contents;
+}
+
+/* Hidden below xl — the mobile tab bar handles navigation there */
+.rail {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .rail {
+    grid-area: rail;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bq-space-6);
+    padding: var(--bq-space-6) var(--bq-space-5);
+    border-right: 1px solid var(--bq-line-soft);
+    background: var(--bq-bg);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 4px 6px 0;
+}
+
+.mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--bq-ink);
+  color: var(--bq-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.wordmark {
+  font-family: var(--bq-font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--bq-ink);
+}
+
+.capture-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 12px 14px;
+  background: var(--bq-ink);
+  color: var(--bq-bg);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--bq-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  transition: opacity var(--bq-duration-fast) ease;
+
+  &:hover {
+    opacity: 0.92;
+  }
+
+  span:first-of-type {
+    flex: 1;
+  }
+}
+
+.kbd {
+  font-family: var(--bq-font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--bq-bg) 18%, transparent);
+  opacity: 0.7;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--bq-ink-soft);
+  text-align: left;
+  font-family: var(--bq-font-sans);
+  font-size: 14px;
+  font-weight: 450;
+  transition: background var(--bq-duration-fast) ease, color var(--bq-duration-fast) ease;
+
+  &:hover {
+    background: var(--bq-bg-soft);
+    color: var(--bq-ink);
+  }
+
+  &.is-active {
+    background: var(--bq-bg-soft);
+    color: var(--bq-ink);
+
+    &::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: var(--bq-accent);
+      border-radius: 2px;
+      margin-right: -6px;
+      margin-left: -3px;
+    }
+  }
+}
+
+.meta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-1);
+  padding: var(--bq-space-3);
+  border-top: 1px solid var(--bq-line-soft);
+}

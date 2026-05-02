@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.band {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border-top: 1px solid var(--bq-line-soft);
+  border-bottom: 1px solid var(--bq-line-soft);
+  padding: 16px 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-1);
+  padding: 0 var(--bq-space-2);
+
+  &:not(:first-child) {
+    border-left: 1px solid var(--bq-line-soft);
+  }
+}
+
+.value {
+  font-family: var(--bq-font-sans);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--bq-ink);
+}
+
+.label {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bq-ink-dim);
+  font-weight: 400;
+}

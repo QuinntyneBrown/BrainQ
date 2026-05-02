@@ -1,0 +1,35 @@
+:host {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--bq-z-toast);
+  pointer-events: none;
+}
+
+@media (min-width: 1280px) {
+  :host {
+    bottom: 32px;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--bq-space-2);
+  padding: 10px 16px;
+  background: var(--bq-ink);
+  color: var(--bq-bg);
+  border-radius: var(--bq-radius-pill);
+  font-family: var(--bq-font-sans);
+  font-size: 13px;
+  box-shadow: 0 12px 30px -10px color-mix(in oklch, var(--bq-ink) 30%, transparent);
+  animation: bq-toast-in var(--bq-duration) var(--bq-ease);
+}
+
+@keyframes bq-toast-in {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}

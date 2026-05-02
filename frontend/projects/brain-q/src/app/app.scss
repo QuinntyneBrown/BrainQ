@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bq-bg);
+  z-index: var(--bq-z-overlay);
+  overflow-y: auto;
+  animation: bq-slide-in var(--bq-duration) var(--bq-ease);
+}
+
+@keyframes bq-slide-in {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+}
+
+/* On xl, the detail "slides into" the stage like a tab — fade only */
+@media (min-width: 1280px) {
+  .detail-overlay {
+    animation: bq-fade var(--bq-duration) ease;
+  }
+
+  @keyframes bq-fade {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+.rail-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bq-space-1);
+}
+
+.rail-storage {
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  color: var(--bq-ink-soft);
+}

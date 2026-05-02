@@ -1,0 +1,14 @@
+:host {
+  display: inline;
+  font-family: var(--bq-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bq-ink-soft);
+  font-weight: 450;
+
+  &.bq-meta-dim {
+    color: var(--bq-ink-dim);
+    font-weight: 400;
+  }
+}

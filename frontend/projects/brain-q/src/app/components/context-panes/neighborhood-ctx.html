@@ -1,0 +1,50 @@
+@if (entity(); as e) {
+  <bq-ctx-pane bqCtx ariaLabel="Connections">
+    <div class="block">
+      <div class="bq-meta bq-meta-dim">NEIGHBORHOOD</div>
+      <svg class="graph" viewBox="0 0 220 220" width="100%">
+        @for (n of positioned(); track $index) {
+          <line
+            [attr.x1]="centerX" [attr.y1]="centerY"
+            [attr.x2]="n.x" [attr.y2]="n.y"
+            class="graph-edge"
+            [class]="'em-' + n.kind"
+          />
+        }
+        <circle [attr.cx]="centerX" [attr.cy]="centerY" r="22" class="graph-center" />
+        <text [attr.x]="centerX" [attr.y]="centerY + 4" text-anchor="middle" class="graph-center-text">
+          {{ initials(e.title) }}
+        </text>
+        @for (n of positioned(); track $index) {
+          <g class="graph-node" (click)="open.emit(n.id)">
+            <circle [attr.cx]="n.x" [attr.cy]="n.y" r="14" />
+            <text [attr.x]="n.x" [attr.y]="n.y + 3" text-anchor="middle" class="graph-node-text">
+              {{ initials(n.title) }}
+            </text>
+          </g>
+        }
+      </svg>
+    </div>
+
+    <div class="block">
+      <div class="bq-meta bq-meta-dim">NEIGHBORS</div>
+      <div class="rows">
+        @for (n of positioned(); track $index) {
+          <button class="entity-row" type="button" (click)="open.emit(n.id)">
+            <span class="glyph"><bq-type-glyph [type]="n.type" [size]="14" /></span>
+            <span class="body">
+              <span class="title">{{ n.title }}</span>
+              <span class="bq-meta bq-meta-dim">
+                {{ n.dir === 'out' ? '→' : '←' }} {{ edgeLabel(n.kind) }}
+              </span>
+            </span>
+            <span class="chev"><bq-icon name="arrow" [size]="14" [stroke]="1.2" /></span>
+          </button>
+        }
+        @if (!positioned().length) {
+          <div class="empty bq-meta bq-meta-dim">No connections yet.</div>
+        }
+      </div>
+    </div>
+  </bq-ctx-pane>
+}

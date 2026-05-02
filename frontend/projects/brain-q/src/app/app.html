@@ -1,0 +1,57 @@
+<bq-app-shell>
+  <bq-side-rail
+    bqRail
+    [items]="railItems"
+    [active]="activeTab()"
+    (activeChange)="setTab($event)"
+    (capture)="openCapture()"
+  >
+    <div bqRailFooter class="rail-footer">
+      <span class="bq-meta bq-meta-dim">storage</span>
+      <span class="rail-storage">PostgreSQL · pgvector</span>
+      <span class="bq-meta bq-meta-dim">{{ entityCount() }} entities · {{ edgeCount() }} edges</span>
+    </div>
+  </bq-side-rail>
+
+  <router-outlet />
+
+  @if (openId(); as id) {
+    <div bqOverlay class="detail-overlay">
+      <app-detail [id]="id" (back)="closeEntity()" (open)="openEntity($event)" />
+    </div>
+  }
+
+  @if (openId(); as id) {
+    <app-neighborhood-ctx [id]="id" (open)="openEntity($event)" />
+  } @else {
+    @switch (activeTab()) {
+      @case ('today') {
+        <app-today-ctx (open)="openEntity($event)" />
+      }
+      @case ('brain') {
+        <app-brain-ctx (open)="openEntity($event)" />
+      }
+      @case ('search') {
+        <app-search-ctx />
+      }
+    }
+  }
+
+  <bq-tab-bar
+    bqTabBar
+    [items]="tabItems"
+    [active]="activeTab()"
+    (activeChange)="setTab($event)"
+    (capture)="openCapture()"
+  />
+</bq-app-shell>
+
+<app-capture-sheet
+  [open]="captureOpen()"
+  (closed)="closeCapture()"
+  (committed)="onCommit($event)"
+/>
+
+@if (toast(); as t) {
+  <bq-toast>{{ t }}</bq-toast>
+}

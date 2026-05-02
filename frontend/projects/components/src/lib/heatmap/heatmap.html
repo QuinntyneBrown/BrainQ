@@ -1,0 +1,9 @@
+<div class="heatmap" aria-hidden="true">
+  @for (col of data(); track $index) {
+    <div class="col">
+      @for (v of col; track $index) {
+        <div class="cell" [attr.data-level]="v"></div>
+      }
+    </div>
+  }
+</div>

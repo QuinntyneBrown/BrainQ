@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="chip"
+  [class.is-active]="active()"
+  [attr.aria-pressed]="active()"
+>
+  @if (glyph(); as g) {
+    <span class="chip-glyph"><bq-type-glyph [type]="g" [size]="12" /></span>
+  }
+  <span class="chip-label"><ng-content /></span>
+  @if (count() != null) {
+    <span class="chip-count">{{ count() }}</span>
+  }
+</button>

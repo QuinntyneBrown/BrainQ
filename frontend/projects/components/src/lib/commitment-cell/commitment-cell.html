@@ -1,0 +1,19 @@
+<button class="cell" type="button" (click)="open.emit()">
+  <span class="ring-wrap">
+    <bq-ring
+      [value]="done() ? 1 : value()"
+      [size]="44"
+      [stroke]="2.4"
+      [accented]="done()"
+    />
+    @if (done()) {
+      <span class="check">
+        <bq-icon name="check" [size]="14" [stroke]="1.6" />
+      </span>
+    }
+  </span>
+  <span class="text">
+    <span class="title">{{ title() }}</span>
+    <span class="meta">{{ streak() }}-day streak · {{ cadence() }}</span>
+  </span>
+</button>

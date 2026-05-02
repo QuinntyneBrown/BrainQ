@@ -1,0 +1,16 @@
+<div class="search" [class.is-lg]="size() === 'lg'">
+  <bq-icon name="search" [size]="size() === 'lg' ? 18 : 16" [stroke]="1.4" />
+  <input
+    class="input"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    (input)="onInput($event)"
+    [attr.autofocus]="autofocus() ? '' : null"
+  />
+  @if (value()) {
+    <bq-icon-button ariaLabel="Clear" (click)="clear()">
+      <bq-icon name="close" [size]="16" [stroke]="1.4" />
+    </bq-icon-button>
+  }
+  <ng-content select="[bqSearchHint]" />
+</div>

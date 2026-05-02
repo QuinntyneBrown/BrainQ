@@ -1,0 +1,14 @@
+<div class="app">
+  <ng-content select="[bqRail]" />
+
+  <div class="stage">
+    <div class="stage-inner">
+      <ng-content />
+    </div>
+    <ng-content select="[bqOverlay]" />
+  </div>
+
+  <ng-content select="[bqCtx]" />
+
+  <ng-content select="[bqTabBar]" />
+</div>
