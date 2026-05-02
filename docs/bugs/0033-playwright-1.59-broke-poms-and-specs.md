@@ -56,5 +56,7 @@ the POM `.fill()` and strict-mode regressions.
 - All previously-failing strict-mode regressions in `02`, `05`, and `08`
   pass after the POM and `.first()` fixes.
 
-Status: Fixed in the next two commits. (Tests `03` connection rendering and
-`04` semantic search remain blocked on bugs 0034 and 0035, see those logs.)
+Status: **Fixed.** 16 of 20 xl tests pass. The remaining four are blocked on
+bugs 0034 (entity DTO omits edges) and 0035 (semantic search needs Ollama),
+both logged separately. `99-feature-tour.spec.ts` records the user-guide
+walkthrough cleanly to `test-results/.../video.webm`.
