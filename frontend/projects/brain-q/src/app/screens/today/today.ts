@@ -26,6 +26,11 @@ export class TodayScreen {
   readonly agenda = this.data.agenda;
   readonly dateUpper = computed(() => this.agenda().date.toUpperCase());
 
+  readonly entityCount = computed(() => this.data.entities().length);
+  readonly edgeCount = computed(() =>
+    this.data.entities().reduce((acc, e) => acc + (e.edges?.length || 0), 0),
+  );
+
   readonly commitments = computed(() =>
     this.data.entities().filter((e) => e.type === 'Commitment'),
   );
