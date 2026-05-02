@@ -4,27 +4,51 @@
     <h1 class="bq-display-sm">{{ heading() }}</h1>
   </header>
 
-  <bq-search-bar [value]="query()" (valueChange)="query.set($event)" [placeholder]="placeholder()" />
+  <bq-search-bar
+    [value]="query()"
+    (valueChange)="query.set($event)"
+    [placeholder]="placeholder()"
+    data-testid="brain-search"
+  />
 
-  <div class="chip-row scroll">
-    <bq-chip [active]="filter() === 'All'" (click)="setFilter('All')" [count]="countOf('All')">
+  <div class="chip-row scroll" data-testid="brain-chip-row">
+    <bq-chip
+      [active]="filter() === 'All'"
+      (click)="setFilter('All')"
+      [count]="countOf('All')"
+      data-testid="brain-chip-All"
+    >
       all
     </bq-chip>
     @for (t of types; track t) {
-      <bq-chip [active]="filter() === t" [glyph]="t" [count]="countOf(t)" (click)="setFilter(t)">
+      <bq-chip
+        [active]="filter() === t"
+        [glyph]="t"
+        [count]="countOf(t)"
+        (click)="setFilter(t)"
+        [attr.data-testid]="'brain-chip-' + t"
+      >
         {{ typeLabel[t] }}s
       </bq-chip>
     }
   </div>
 
   @if (filter() === 'Person') {
-    <div class="recallq">
+    <div class="recallq" data-testid="recallq-band">
       <bq-stat-band [stats]="recallqStats()" />
+      <span data-testid="recallq-stat-orbit" hidden>{{ recallqStats()[0].value }}</span>
+      <span data-testid="recallq-stat-overdue" hidden>{{ recallqStats()[1].value }}</span>
+      <span data-testid="recallq-stat-close" hidden>{{ recallqStats()[2].value }}</span>
       @if (overdue().length) {
-        <div class="overdue">
+        <div class="overdue" data-testid="recallq-overdue">
           <span class="bq-meta">Worth a message</span>
           @for (p of overdue(); track p.id) {
-            <button class="overdue-row" type="button" (click)="requestOpen(p.id)">
+            <button
+              class="overdue-row"
+              type="button"
+              (click)="requestOpen(p.id)"
+              [attr.data-testid]="'recallq-overdue-row-' + p.id"
+            >
               <bq-name-init [name]="p.title" size="md" />
               <span class="overdue-text">
                 <span class="entity-title">{{ p.title }}</span>
@@ -47,6 +71,7 @@
           [title]="e.title"
           [subtitle]="e.subtitle"
           (open)="requestOpen(e.id)"
+          data-testid="brain-row"
         />
       }
       @if (!list().length) {

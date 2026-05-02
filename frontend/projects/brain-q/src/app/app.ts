@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import {
@@ -60,6 +67,8 @@ export class App {
   private readonly data = inject(BRAIN_Q_DATA);
   private readonly router = inject(Router);
   private readonly shell = inject(AppShellState);
+  private toastTimer: ReturnType<typeof setTimeout> | undefined;
+  private seenCaptureFailures = 0;
 
   readonly tabItems = TAB_ITEMS;
   readonly railItems = RAIL_ITEMS;
@@ -79,6 +88,16 @@ export class App {
   readonly edgeCount = computed(() =>
     this.data.entities().reduce((acc, e) => acc + (e.edges?.length || 0), 0),
   );
+
+  constructor() {
+    effect(() => {
+      const failures = this.data.captureFailures();
+      if (failures > this.seenCaptureFailures) {
+        this.seenCaptureFailures = failures;
+        this.showToast('Save failed — try again');
+      }
+    });
+  }
 
   setTab(id: string | null) {
     if (id === 'today' || id === 'brain' || id === 'search') {
@@ -104,8 +123,15 @@ export class App {
 
   onCommit(p: BqCapturePayload) {
     const saved = this.data.capture(p);
-    this.toast.set(`Saved as ${BQ_TYPE_LABEL[saved.type]} · linked to your brain`);
-    setTimeout(() => this.toast.set(null), 2400);
+    this.showToast(`Saved as ${BQ_TYPE_LABEL[saved.type]} · linked to your brain`);
+  }
+
+  private showToast(message: string) {
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer);
+    }
+    this.toast.set(message);
+    this.toastTimer = setTimeout(() => this.toast.set(null), 2400);
   }
 }
 

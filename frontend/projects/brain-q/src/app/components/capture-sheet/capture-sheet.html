@@ -9,6 +9,7 @@
   <textarea
     #textarea
     class="capture-input"
+    data-testid="capture-textarea"
     [value]="text()"
     (input)="onTextInput($event)"
     placeholder="What’s on your mind?"
@@ -17,35 +18,56 @@
 
   <div class="capture-meta">
     <span class="bq-meta bq-meta-dim">Detected as</span>
-    <span class="detected">
+    <span class="detected" data-testid="capture-detected-type">
       <bq-type-glyph [type]="finalType()" [size]="12" />
       <span>{{ typeLabel[finalType()] }}</span>
     </span>
   </div>
 
   <div class="chip-row">
-    <bq-chip [active]="typeChoice() === 'auto'" (click)="setType('auto')">auto</bq-chip>
+    <bq-chip
+      data-testid="capture-chip-auto"
+      [active]="typeChoice() === 'auto'"
+      (click)="setType('auto')"
+      >auto</bq-chip
+    >
     @for (t of types; track t) {
-      <bq-chip [active]="typeChoice() === t" [glyph]="t" (click)="setType(t)">
+      <bq-chip
+        [attr.data-testid]="'capture-chip-' + t"
+        [active]="typeChoice() === t"
+        [glyph]="t"
+        (click)="setType(t)"
+      >
         {{ typeLabel[t] }}
       </bq-chip>
     }
   </div>
 
   @if (suggested().length) {
-    <div class="suggested">
+    <div class="suggested" data-testid="capture-suggested">
       <span class="bq-meta bq-meta-dim">Looks related to</span>
       <div class="suggested-list">
         @for (s of suggested(); track s.id) {
-          <bq-edge-chip [targetType]="s.type" [targetTitle]="s.title" [isStatic]="true" />
+          <bq-edge-chip
+            [attr.data-testid]="'capture-suggestion-' + s.id"
+            [targetType]="s.type"
+            [targetTitle]="s.title"
+            [isStatic]="true"
+          />
         }
       </div>
     </div>
   }
 
   <div class="actions">
-    <bq-button variant="ghost" (click)="cancel()">Cancel</bq-button>
-    <bq-button variant="primary" [disabled]="!text().trim()" (click)="save()">
+    <bq-button data-testid="capture-cancel" variant="ghost" (click)="cancel()">Cancel</bq-button>
+    <bq-button
+      data-testid="capture-save"
+      variant="primary"
+      [disabled]="!text().trim()"
+      [attr.aria-disabled]="!text().trim()"
+      (click)="save()"
+    >
       <span>Save to brain</span>
       <bq-icon name="arrow" [size]="14" [stroke]="1.6" />
     </bq-button>

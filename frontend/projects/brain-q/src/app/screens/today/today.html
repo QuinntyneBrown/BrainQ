@@ -38,11 +38,12 @@
     </section>
   }
 
-  <section class="block">
+  <section class="block" data-testid="today-recent">
     <bq-section-label>Recently touched</bq-section-label>
     <div class="rows">
       @for (e of recent(); track e.id) {
         <bq-entity-row
+          [attr.data-testid]="'brain-row-' + e.id"
           [type]="e.type"
           [title]="e.title"
           [subtitle]="e.subtitle"

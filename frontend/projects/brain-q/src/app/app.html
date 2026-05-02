@@ -9,7 +9,9 @@
     <div bqRailFooter class="rail-footer">
       <span class="bq-meta bq-meta-dim">storage</span>
       <span class="rail-storage">PostgreSQL · pgvector</span>
-      <span class="bq-meta bq-meta-dim">{{ entityCount() }} entities · {{ edgeCount() }} edges</span>
+      <span class="bq-meta bq-meta-dim"
+        >{{ entityCount() }} entities · {{ edgeCount() }} edges</span
+      >
     </div>
   </bq-side-rail>
 
@@ -53,5 +55,5 @@
 />
 
 @if (toast(); as t) {
-  <bq-toast>{{ t }}</bq-toast>
+  <bq-toast data-testid="app-toast">{{ t }}</bq-toast>
 }

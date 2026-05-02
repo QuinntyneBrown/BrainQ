@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+out/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local env / secrets
+*.env
+appsettings.Development.local.json
+appsettings.*.local.json
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# OS
+.DS_Store
+Thumbs.db

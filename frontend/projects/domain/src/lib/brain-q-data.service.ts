@@ -36,6 +36,9 @@ export interface BrainQDataService {
 
   /** Persist a new entity from the capture sheet. Returns the saved entity. */
   capture(payload: BqCapturePayload): BqEntity;
+
+  /** Increments when an optimistic capture fails and is rolled back. */
+  readonly captureFailures: Signal<number>;
 }
 
 export const BRAIN_Q_DATA = new InjectionToken<BrainQDataService>('BRAIN_Q_DATA');

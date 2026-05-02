@@ -4,7 +4,12 @@
     <span class="wordmark">{{ brandName() }}</span>
   </div>
 
-  <button class="capture-btn" type="button" (click)="capture.emit()">
+  <button
+    class="capture-btn"
+    type="button"
+    data-testid="capture-button-rail"
+    (click)="capture.emit()"
+  >
     <bq-icon name="capture" [size]="16" [stroke]="1.6" />
     <span>{{ captureLabel() }}</span>
     <span class="kbd">{{ captureKbd() }}</span>

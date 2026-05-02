@@ -7,5 +7,6 @@
  */
 
 export * from './lib/models';
+export * from './lib/api-base-url.token';
 export * from './lib/brain-q-data.service';
 export * from './lib/provide-domain';

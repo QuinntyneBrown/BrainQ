@@ -1,4 +1,6 @@
-import { Injectable, Signal, computed, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
+import { API_BASE_URL } from './api-base-url.token';
 import { BrainQDataService } from './brain-q-data.service';
 import {
   BqAgenda,
@@ -9,12 +11,21 @@ import {
   BqInboundEdge,
   BqSearchMode,
 } from './models';
-import { SEED_AGENDA, SEED_ENTITIES, SEED_HEATMAP } from './seed';
+import { SEED_AGENDA, SEED_HEATMAP } from './seed';
+
+const EMPTY_AGENDA: BqAgenda = {
+  ...SEED_AGENDA,
+  recent: [],
+  nudges: [],
+};
 
 @Injectable()
-export class InMemoryBrainQDataService implements BrainQDataService {
-  private readonly _entities = signal<readonly BqEntity[]>(SEED_ENTITIES);
-  private readonly _agenda = signal<BqAgenda>(SEED_AGENDA);
+export class HttpBrainQDataService implements BrainQDataService {
+  private readonly http = inject(HttpClient);
+  private readonly base = inject(API_BASE_URL);
+
+  private readonly _entities = signal<readonly BqEntity[]>([]);
+  private readonly _agenda = signal<BqAgenda>(EMPTY_AGENDA);
   private readonly _captureFailures = signal<number>(0);
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
@@ -34,6 +45,10 @@ export class InMemoryBrainQDataService implements BrainQDataService {
     }
     return { byId, inbound };
   });
+
+  constructor() {
+    this.hydrate();
+  }
 
   byId(id: string): BqEntity | undefined {
     return this.index().byId.get(id);
@@ -110,22 +125,72 @@ export class InMemoryBrainQDataService implements BrainQDataService {
   }
 
   capture(payload: BqCapturePayload): BqEntity {
-    const id = `${payload.type[0].toLowerCase()}_${Date.now().toString(36)}`;
-    const entity: BqEntity = {
-      id,
-      type: payload.type,
-      title: payload.text.split('\n')[0].slice(0, 80) || payload.text,
-      subtitle: 'Just captured',
-      body: payload.text,
-      meta: {},
-      tags: [],
-      edges: [],
-    };
-    this._entities.update((xs) => [entity, ...xs]);
+    const optimistic = makeOptimistic(payload);
+    this._entities.update((xs) => [optimistic, ...xs]);
+    this.promoteRecent(optimistic.id);
+
+    this.http.post<BqEntity>(`${this.base}/entities`, payload).subscribe({
+      next: (saved) => {
+        this._entities.update((xs) => xs.map((e) => (e.id === optimistic.id ? saved : e)));
+        this.replaceRecentId(optimistic.id, saved.id);
+        this.refresh();
+      },
+      error: () => {
+        this._entities.update((xs) => xs.filter((e) => e.id !== optimistic.id));
+        this.removeRecent(optimistic.id);
+        this._captureFailures.update((count) => count + 1);
+      },
+    });
+
+    return optimistic;
+  }
+
+  refresh(): void {
+    this.hydrate();
+  }
+
+  private hydrate() {
+    this.http.get<readonly BqEntity[]>(`${this.base}/entities`).subscribe((xs) => {
+      this._entities.set(xs);
+    });
+  }
+
+  private promoteRecent(id: string) {
     this._agenda.update((agenda) => ({
       ...agenda,
-      recent: [entity.id, ...agenda.recent.filter((id) => id !== entity.id)],
+      recent: [id, ...agenda.recent.filter((existing) => existing !== id)],
     }));
-    return entity;
   }
+
+  private replaceRecentId(from: string, to: string) {
+    this._agenda.update((agenda) => ({
+      ...agenda,
+      recent: agenda.recent.map((id) => (id === from ? to : id)),
+    }));
+  }
+
+  private removeRecent(id: string) {
+    this._agenda.update((agenda) => ({
+      ...agenda,
+      recent: agenda.recent.filter((existing) => existing !== id),
+    }));
+  }
+}
+
+function makeOptimistic(payload: BqCapturePayload): BqEntity {
+  return {
+    id: `optimistic_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`,
+    type: payload.type,
+    title: titleFrom(payload.text),
+    subtitle: 'Just captured',
+    body: payload.text,
+    meta: {},
+    tags: [],
+    edges: [],
+  };
+}
+
+function titleFrom(text: string): string {
+  const firstLine = text.split(/\r?\n/, 1)[0]?.trim() ?? text;
+  return firstLine.slice(0, 80);
 }
