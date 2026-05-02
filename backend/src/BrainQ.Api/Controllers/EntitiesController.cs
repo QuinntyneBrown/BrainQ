@@ -129,7 +129,23 @@ public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed) 
             .Take(limit)
             .ToListAsync(ct);
 
-        return Ok(items.Select(EntityDto.From));
+        var commitmentIds = items.Where(e => e.Type == EntityType.Commitment).Select(e => e.Id).ToList();
+        var activity = commitmentIds.Count == 0
+            ? new List<CommitmentActivity>()
+            : await db.CommitmentActivities
+                .Where(a => commitmentIds.Contains(a.CommitmentEntityId))
+                .ToListAsync(ct);
+        var today = CommitmentsController.TodayLocal(TimeProvider.System);
+
+        return Ok(items.Select(e =>
+        {
+            var dto = EntityDto.From(e);
+            return e.Type == EntityType.Commitment
+                ? dto.WithCommitmentMeta(
+                    streak: CommitmentsController.StreakOf(activity, e.Id, today),
+                    todayDone: CommitmentsController.TodayDoneOf(activity, e.Id, today))
+                : dto;
+        }));
     }
 
     [HttpGet("{id:guid}")]
