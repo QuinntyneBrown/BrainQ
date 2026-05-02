@@ -21,11 +21,11 @@ Everything you capture is one of these five types. Type colours the icon (its "g
 
 | Type | Glyph | Use it for |
 |---|---|---|
-| **Note** | dot | Anything plain — a thought, a quote, a passing observation |
-| **Idea** | spark | Something you might do, build, or explore |
-| **Person** | initial | A real person — gets last-seen, touchpoints, and the RecallQ surface |
-| **Project** | square | A unit of work with a status, due date, and progress |
-| **Commitment** | ring | A recurring practice — gets a streak, a heatmap, and a daily Log button |
+| **Note** | notepad (page with folded corner) | Anything plain — a thought, a quote, a passing observation |
+| **Idea** | lightbulb | Something you might do, build, or explore |
+| **Person** | head + shoulders silhouette | A real person — gets last-seen, touchpoints, and the RecallQ surface |
+| **Project** | clipboard (rectangle with two horizontal lines) | A unit of work with a status, due date, and progress |
+| **Commitment** | clock circle (circle with one minute hand) | A recurring practice — gets a streak, a heatmap, and a daily Log button |
 
 ## The capture-first habit
 
