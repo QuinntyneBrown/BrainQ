@@ -61,4 +61,9 @@ describe('InMemoryBrainQDataService — slice 03 mutations', () => {
     const data: BrainQDataService = TestBed.inject(BRAIN_Q_DATA);
     expect(() => data.refresh()).not.toThrow();
   });
+
+  it('capture trims leading newlines off the title (bug 0028)', () => {
+    const e = service.capture({ type: 'Note', text: '\n\nhello' });
+    expect(e.title).toBe('hello');
+  });
 });
