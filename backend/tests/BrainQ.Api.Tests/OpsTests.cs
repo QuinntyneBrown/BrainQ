@@ -46,6 +46,10 @@ public sealed class OpsTests
             ? cspValues.FirstOrDefault()
             : null;
         Assert.False(string.IsNullOrEmpty(csp), "CSP header must be present in Production");
+        // Bug 0005: index.html links to Google Fonts; production CSP must whitelist them
+        // or every screen falls back to system-ui and the design typography never renders.
+        Assert.Contains("https://fonts.googleapis.com", csp);
+        Assert.Contains("https://fonts.gstatic.com", csp);
     }
 
     [Fact]
