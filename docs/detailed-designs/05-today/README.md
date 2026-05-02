@@ -77,7 +77,7 @@ public static class TodayEndpoints
 }
 ```
 
-The endpoint is read-only and side-effect-free; no caching layer (L1-012). It depends on slice 06's `CommitmentActivity` table for daily-commitment nudges, but degrades gracefully if the table is empty.
+The endpoint is read-only and side-effect-free; no caching layer (L1-012). The daily-commitment nudge block depends on slice 06's `CommitmentActivity` table; this slice ships with overdue-person nudges only and adds the daily-commitment block once slice 06 lands the table.
 
 ## 3. Workflow
 
