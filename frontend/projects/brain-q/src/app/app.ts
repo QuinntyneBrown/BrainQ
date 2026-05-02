@@ -103,7 +103,18 @@ export class App {
     });
     this.health.check();
     setInterval(() => this.health.check(), 60_000);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.onKeydown);
+    }
   }
+
+  private readonly onKeydown = (e: KeyboardEvent) => {
+    if (e.key !== 'n' && e.key !== 'N') return;
+    const target = e.target as HTMLElement | null;
+    if (target?.matches?.('input, textarea, [contenteditable="true"]')) return;
+    e.preventDefault();
+    this.shell.openCapture();
+  };
 
   setTab(id: string | null) {
     if (id === 'today' || id === 'brain' || id === 'search') {
