@@ -1,8 +1,13 @@
 <div class="heatmap" aria-hidden="true">
-  @for (col of data(); track $index) {
+  @for (col of data(); track $index; let w = $index) {
     <div class="col">
-      @for (v of col; track $index) {
-        <div class="cell" [attr.data-level]="v"></div>
+      @for (v of col; track $index; let d = $index) {
+        <div
+          class="cell"
+          [attr.data-level]="v"
+          [attr.data-band]="v"
+          [attr.data-testid]="'heatmap-cell-' + w + '-' + d"
+        ></div>
       }
     </div>
   }

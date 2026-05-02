@@ -47,6 +47,9 @@ export interface BrainQDataService {
   /** Remove the matching outbound edge, if present. */
   removeEdge(fromId: string, toId: string, kind: BqEdgeKind): void;
 
+  /** Toggle today's activity for a commitment; idempotent within a day. */
+  logCommitment(id: string): void;
+
   /** Increments when an optimistic capture fails and is rolled back. */
   readonly captureFailures: Signal<number>;
 }

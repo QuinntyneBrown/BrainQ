@@ -57,6 +57,15 @@
           </bq-detail-card-row>
           <bq-heatmap [data]="heatmap()" />
           <div class="heatmap-caption"><span class="bq-meta bq-meta-dim">last 18 weeks · darker = more</span></div>
+          <button
+            type="button"
+            class="log-today"
+            (click)="logCommitment()"
+            [disabled]="!!e.meta.todayDone"
+            data-testid="detail-log-today"
+          >
+            {{ e.meta.todayDone ? 'Logged today' : 'Log today' }}
+          </button>
         </bq-detail-card>
       }
 

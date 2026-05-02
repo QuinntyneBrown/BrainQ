@@ -77,4 +77,8 @@ export class DetailScreen {
     this.data.removeEntity(this.id());
     this.back.emit();
   }
+
+  logCommitment(): void {
+    this.data.logCommitment(this.id());
+  }
 }

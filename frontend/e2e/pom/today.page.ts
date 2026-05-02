@@ -11,4 +11,6 @@ export class TodayPage {
   nudges = () => this.page.getByTestId('today-nudges').locator('[data-testid^="nudge-"]');
   recentlyTouched = () =>
     this.page.getByTestId('today-recent').locator('[data-testid^="brain-row-"]');
+  toggleCommitment = (id: string) => this.page.getByTestId(`commitment-cell-${id}-toggle`).click();
+  streakOf = (id: string) => this.page.getByTestId(`commitment-cell-${id}-streak`);
 }

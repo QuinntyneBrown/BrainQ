@@ -139,6 +139,26 @@
   display: block;
 }
 
+.log-today {
+  align-self: flex-start;
+  margin-top: var(--bq-space-3);
+  padding: 8px 16px;
+  background: var(--bq-accent);
+  color: var(--bq-bg);
+  border: none;
+  border-radius: var(--bq-radius-md, 10px);
+  font-family: var(--bq-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:disabled {
+    background: var(--bq-bg-soft);
+    color: var(--bq-ink-dim);
+    cursor: default;
+  }
+}
+
 .rows {
   display: flex;
   flex-direction: column;

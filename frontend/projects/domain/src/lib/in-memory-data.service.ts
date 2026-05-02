@@ -148,4 +148,13 @@ export class InMemoryBrainQDataService implements BrainQDataService {
       }),
     );
   }
+
+  logCommitment(id: string): void {
+    this._entities.update((xs) =>
+      xs.map((e) => {
+        if (e.id !== id || e.type !== 'Commitment' || e.meta.todayDone) return e;
+        return { ...e, meta: { ...e.meta, todayDone: true, streak: (e.meta.streak ?? 0) + 1 } };
+      }),
+    );
+  }
 }

@@ -14,4 +14,6 @@ export class DetailPage {
   delete = () => this.page.getByTestId('detail-delete').click();
   graphNode = (id: string) => this.page.getByTestId(`graph-node-${id}`);
   neighbor = (id: string) => this.page.getByTestId(`neighbor-row-${id}`);
+  heatmapCells = () => this.page.locator('[data-testid^="heatmap-cell-"]');
+  logToday = () => this.page.getByTestId('detail-log-today').click();
 }

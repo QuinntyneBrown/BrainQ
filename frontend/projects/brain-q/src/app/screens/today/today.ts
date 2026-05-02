@@ -44,6 +44,10 @@ export class TodayScreen {
     return done ? 1 : 0.32;
   }
 
+  logCommitment(id: string) {
+    this.data.logCommitment(id);
+  }
+
   requestOpen(id: string) {
     this.open.emit(id);
     this.shell.openEntity(id);

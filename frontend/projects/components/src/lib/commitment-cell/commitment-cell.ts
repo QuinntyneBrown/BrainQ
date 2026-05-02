@@ -15,5 +15,12 @@ export class BqCommitmentCell {
   readonly cadence = input<string>('');
   readonly value = input<number>(0.32);
   readonly done = input<boolean>(false);
+  readonly testId = input<string>('');
   readonly open = output<void>();
+  readonly toggle = output<void>();
+
+  testIdFor(suffix: 'toggle' | 'streak'): string | null {
+    const id = this.testId();
+    return id ? `${id}-${suffix}` : null;
+  }
 }

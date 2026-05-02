@@ -48,6 +48,7 @@ app.MapEntitiesEndpoints();
 app.MapEdgesEndpoints();
 app.MapSearchEndpoints();
 app.MapTodayEndpoints();
+app.MapCommitmentsEndpoints();
 
 app.Run();
 

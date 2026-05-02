@@ -20,7 +20,9 @@
           [cadence]="c.meta.cadence ?? ''"
           [value]="commitValue(c.meta.todayDone)"
           [done]="!!c.meta.todayDone"
+          [testId]="'commitment-cell-' + c.id"
           (open)="requestOpen(c.id)"
+          (toggle)="logCommitment(c.id)"
           [attr.data-testid]="'commitment-cell-' + c.id"
         />
       }

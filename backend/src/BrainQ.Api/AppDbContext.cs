@@ -15,6 +15,7 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Entity> Entities => Set<Entity>();
     public DbSet<Edge> Edges => Set<Edge>();
+    public DbSet<CommitmentActivity> CommitmentActivities => Set<CommitmentActivity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,5 +57,11 @@ public sealed class AppDbContext : DbContext
         edge.HasIndex(x => new { x.FromEntityId, x.ToEntityId, x.Type }).IsUnique();
         edge.HasIndex(x => x.FromEntityId);
         edge.HasIndex(x => x.ToEntityId);
+
+        var activity = modelBuilder.Entity<CommitmentActivity>();
+        activity.ToTable("CommitmentActivity");
+        activity.HasKey(x => x.Id);
+        activity.Property(x => x.Value).IsRequired();
+        activity.HasIndex(x => new { x.CommitmentEntityId, x.DateUtc }).IsUnique();
     }
 }

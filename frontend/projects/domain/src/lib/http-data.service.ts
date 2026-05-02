@@ -8,6 +8,7 @@ import {
   BqEdgeKind,
   BqEntity,
   BqEntityType,
+  BqHeatLevel,
   BqHeatmap,
   BqInboundEdge,
   BqSearchMode,
@@ -31,6 +32,7 @@ export class HttpBrainQDataService implements BrainQDataService {
   private readonly _captureFailures = signal<number>(0);
   private readonly _semanticQ = signal<string>('');
   private readonly _semanticResults = signal<readonly BqEntity[]>([]);
+  private readonly _heatmaps = signal<Record<string, BqHeatmap>>({});
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
   readonly agenda: Signal<BqAgenda> = this._agenda.asReadonly();
@@ -63,7 +65,20 @@ export class HttpBrainQDataService implements BrainQDataService {
     return this.index().inbound.get(id) ?? [];
   }
 
-  heatmapFor(_id: string): BqHeatmap {
+  heatmapFor(id: string): BqHeatmap {
+    const cached = this._heatmaps()[id];
+    if (cached) return cached;
+    this.http
+      .get<{ cells: number[][] }>(`${this.base}/commitments/${id}/activity`, {
+        params: { weeks: '18' },
+      })
+      .subscribe({
+        next: (resp) => {
+          const map = resp.cells.map((week) => week.map((v) => v as BqHeatLevel));
+          this._heatmaps.update((cache) => ({ ...cache, [id]: map }));
+        },
+        error: () => {},
+      });
     return SEED_HEATMAP;
   }
 
@@ -161,6 +176,35 @@ export class HttpBrainQDataService implements BrainQDataService {
     this.http
       .post(`${this.base}/edges`, { fromEntityId: fromId, toEntityId: toId, type: kind })
       .subscribe({ error: () => this._entities.set(before) });
+  }
+
+  logCommitment(id: string): void {
+    const before = this._entities();
+    this._entities.update((xs) =>
+      xs.map((e) => {
+        if (e.id !== id || e.type !== 'Commitment' || e.meta.todayDone) return e;
+        return { ...e, meta: { ...e.meta, todayDone: true, streak: (e.meta.streak ?? 0) + 1 } };
+      }),
+    );
+    this.http
+      .post<{ streak: number; todayDone: boolean }>(`${this.base}/commitments/${id}/log`, {})
+      .subscribe({
+        next: (res) => {
+          this._entities.update((xs) =>
+            xs.map((e) =>
+              e.id === id
+                ? { ...e, meta: { ...e.meta, streak: res.streak, todayDone: res.todayDone } }
+                : e,
+            ),
+          );
+          this._heatmaps.update((cache) => {
+            const next = { ...cache };
+            delete next[id];
+            return next;
+          });
+        },
+        error: () => this._entities.set(before),
+      });
   }
 
   removeEdge(fromId: string, toId: string, kind: BqEdgeKind): void {

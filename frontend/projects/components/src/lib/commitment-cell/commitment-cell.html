@@ -1,5 +1,11 @@
-<button class="cell" type="button" (click)="open.emit()">
-  <span class="ring-wrap">
+<div class="cell">
+  <button
+    type="button"
+    class="ring-wrap"
+    aria-label="Log today"
+    (click)="toggle.emit()"
+    [attr.data-testid]="testIdFor('toggle')"
+  >
     <bq-ring
       [value]="done() ? 1 : value()"
       [size]="44"
@@ -11,9 +17,11 @@
         <bq-icon name="check" [size]="14" [stroke]="1.6" />
       </span>
     }
-  </span>
-  <span class="text">
+  </button>
+  <button type="button" class="text" (click)="open.emit()">
     <span class="title">{{ title() }}</span>
-    <span class="meta">{{ streak() }}-day streak · {{ cadence() }}</span>
-  </span>
-</button>
+    <span class="meta" [attr.data-testid]="testIdFor('streak')">
+      {{ streak() }}-day streak · {{ cadence() }}
+    </span>
+  </button>
+</div>
