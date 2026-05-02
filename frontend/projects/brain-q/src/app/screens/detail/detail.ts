@@ -89,10 +89,6 @@ export class DetailScreen {
     return Math.round((p ?? 0) * 100);
   }
 
-  edgeTarget(toId: string): BqEntity | undefined {
-    return this.data.byId(toId);
-  }
-
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);
   }
