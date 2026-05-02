@@ -18,3 +18,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0012 | [Delete / edge / commitment-log failures roll back silently (no toast)](0012-silent-write-failures.md) | Fixed | 2026-05-02 |
 | 0013 | [Stale /api/search response can overwrite the current results](0013-semantic-search-stale-response.md) | Fixed | 2026-05-02 |
 | 0014 | [Detail screen renders empty cells for unset Commitment / Person / Project meta](0014-detail-empty-meta-cells.md) | Fixed | 2026-05-02 |
+| 0015 | [Detail's More menu doesn't close on outside click](0015-more-menu-no-outside-click.md) | Fixed | 2026-05-02 |

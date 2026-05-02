@@ -54,11 +54,27 @@ describe('DetailScreen — slice 03 delete flow', () => {
     const numerics = Array.from(host.querySelectorAll<HTMLElement>('.bq-display-num')).map(
       (el) => el.textContent?.trim() ?? '',
     );
-    // streak / today / target are the three .bq-display-num cells in the Commitment card
     expect(numerics[0]).toBe('0');
-    // today cell is either '✓' or '—'
     expect(['✓', '—']).toContain(numerics[1]);
-    // target should not be blank
     expect(numerics[2]).not.toBe('');
+  });
+
+  it('More menu closes on outside pointerdown (bug 0015)', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const c = data.capture({ type: 'Note', text: 'a note' });
+
+    const fixture = TestBed.createComponent(DetailScreen);
+    fixture.componentRef.setInput('id', c.id);
+    fixture.detectChanges();
+
+    const cmp = fixture.componentInstance;
+    cmp.toggleMenu();
+    fixture.detectChanges();
+    expect(cmp.menuOpen()).toBe(true);
+
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(cmp.menuOpen()).toBe(false);
   });
 });
