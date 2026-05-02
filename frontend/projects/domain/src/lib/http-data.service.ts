@@ -95,8 +95,14 @@ export class HttpBrainQDataService implements BrainQDataService {
       this.http
         .get<readonly { entity: BqEntity }[]>(`${this.base}/search`, { params: { q } })
         .subscribe({
-          next: (hits) => this._semanticResults.set(hits.map((h) => h.entity)),
-          error: () => this._semanticResults.set([]),
+          next: (hits) => {
+            if (this._semanticQ() !== q) return;
+            this._semanticResults.set(hits.map((h) => h.entity));
+          },
+          error: () => {
+            if (this._semanticQ() !== q) return;
+            this._semanticResults.set([]);
+          },
         });
     }
     return this._semanticResults();
