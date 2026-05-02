@@ -161,4 +161,8 @@ export class InMemoryBrainQDataService implements BrainQDataService {
       }),
     );
   }
+
+  refresh(): void {
+    // In-memory impl has no remote source to re-pull.
+  }
 }

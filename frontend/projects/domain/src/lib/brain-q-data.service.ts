@@ -50,6 +50,9 @@ export interface BrainQDataService {
   /** Toggle today's activity for a commitment; idempotent within a day. */
   logCommitment(id: string): void;
 
+  /** Re-pull data from any remote source. No-op for in-memory impls. */
+  refresh(): void;
+
   /** Increments when any optimistic mutation (capture, removeEntity, addEdge,
    * removeEdge, logCommitment) fails and is rolled back. The App watches it to
    * fire a single `Save failed — try again` toast per failure. */
