@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { BRAIN_Q_DATA, provideBrainQDomain } from 'domain';
+import { provideBrainQDomain } from 'domain';
 import { BrainScreen } from './brain';
 
 describe('BrainScreen — pinned UI strings (bug 0003)', () => {
@@ -36,17 +36,4 @@ describe('BrainScreen — pinned UI strings (bug 0003)', () => {
     expect(labels).toEqual(['people in orbit', 'overdue to reach out', 'close circle']);
   });
 
-  it('close computed groups people tagged `close` OR `family`', () => {
-    const data = TestBed.inject(BRAIN_Q_DATA);
-    data.capture({ type: 'Person', text: 'Inner Friend' });
-    const inner = data.entities().find((e) => e.title === 'Inner Friend')!;
-    // Tag mutation isn't a public API; assert via the computed signal that the
-    // implementation reads from `close` and `family` tags by checking the seed
-    // entities (the in-memory seed already includes a couple of close/family people).
-    const fixture = TestBed.createComponent(BrainScreen);
-    fixture.componentInstance.setFilter('Person');
-    const close = fixture.componentInstance.recallqStats()[2].value as number;
-    expect(close).toBeGreaterThanOrEqual(0);
-    void inner;
-  });
 });
