@@ -165,3 +165,38 @@ function mkEntity(id: string, title: string) {
     edges: [],
   };
 }
+
+describe('HttpBrainQDataService.capture — optimistic title (bug 0027)', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideBrainQHttpDomain({ baseUrl: '/api' }),
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(BRAIN_Q_DATA);
+    httpMock.expectOne('/api/entities').flush([]);
+    httpMock.expectOne('/api/today').flush({
+      date: '',
+      greeting: '',
+      prompt: '',
+      recent: [],
+      nudges: [],
+    });
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('uses the first non-empty line for the optimistic title', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const optimistic = data.capture({ type: 'Note', text: '\n\nhello world' });
+    expect(optimistic.title).toBe('hello world');
+
+    // Drain the POST so afterEach.verify() is happy.
+    httpMock.expectOne('/api/entities').flush(optimistic);
+  });
+});
