@@ -11,7 +11,7 @@ Start with **[shared/README.md](shared/README.md)** for the system-wide architec
 | 02 | [Entity Browse](02-browse/README.md) | Draft | L2-003, L2-005, L2-009, L2-027, L2-010 | Brain screen filter chips, structured query, RecallQ band |
 | 03 | [Entity Detail + Edges](03-detail-edges/README.md) | Complete | L2-002, L2-003, L2-004, L2-026 | Detail screen, edge chips, Mentioned-by, Neighborhood pane |
 | 04 | [Semantic Search](04-semantic-search/README.md) | Complete | L2-006, L2-007, L2-012 | Embedding generation, GET /api/search, structured/semantic toggle |
-| 05 | [Today Surface](05-today/README.md) | Accepted | L2-022, L1-013 | Today screen agenda, nudges, recently touched |
+| 05 | [Today Surface](05-today/README.md) | Complete | L2-022, L1-013 | Today screen agenda, nudges, recently touched |
 | 06 | [Commitment Activity](06-commitment-activity/README.md) | Draft | L2-008, L2-023 | CommitmentActivity table, log endpoint, derived streak + heatmap |
 | 07 | [Personalization](07-tweaks/README.md) | Draft | L2-025, L1-014 | Tweaks panel, theme/accent/density, localStorage |
 | 08 | [Operational Hardening](08-ops/README.md) | Draft | L2-015, L2-016, L2-017, L2-018, L2-019 | Validation, HTTPS/CSP, rate limiting, health, structured logs |

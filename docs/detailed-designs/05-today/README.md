@@ -1,6 +1,6 @@
 # Slice 05 — Today Surface
 
-**Status:** Accepted (2026-05-02)
+**Status:** Complete (2026-05-02)
 
 **Traces to:** L2-022, L1-013
 
