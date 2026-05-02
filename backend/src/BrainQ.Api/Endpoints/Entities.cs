@@ -1,5 +1,7 @@
 using System.Text.Json;
+using BrainQ.Api.Embeddings;
 using Microsoft.EntityFrameworkCore;
+using Pgvector;
 
 namespace BrainQ.Api.Endpoints;
 
@@ -47,6 +49,7 @@ public static class EntitiesEndpoints
     private static async Task<IResult> CreateAsync(
         CreateRequest req,
         AppDbContext db,
+        IEmbeddingClient embed,
         CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(req.Text))
@@ -73,11 +76,12 @@ public static class EntitiesEndpoints
         }
 
         var now = DateTime.UtcNow;
+        var title = firstLine.Length <= 80 ? firstLine : firstLine[..80];
         var entity = new Entity
         {
             Id = Guid.NewGuid(),
             Type = type,
-            Title = firstLine.Length <= 80 ? firstLine : firstLine[..80],
+            Title = title,
             Body = req.Text,
             Subtitle = "Just captured",
             Tags = [],
@@ -85,6 +89,12 @@ public static class EntitiesEndpoints
             CreatedUtc = now,
             UpdatedUtc = now,
         };
+
+        var vec = await embed.EmbedAsync($"{title}\n\n{req.Text}", ct);
+        if (vec is not null && db.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            entity.Embedding = new Vector(vec);
+        }
 
         db.Entities.Add(entity);
         await db.SaveChangesAsync(ct);

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using BrainQ.Api;
+using BrainQ.Api.Embeddings;
 using BrainQ.Api.Endpoints;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
@@ -21,6 +22,17 @@ builder.Services.AddDbContext<AppDbContext>((sp, options) =>
     options.UseNpgsql(connectionString, npgsql => npgsql.UseVector());
 });
 
+builder.Services.Configure<EmbeddingsOptions>(builder.Configuration.GetSection("Embeddings"));
+var provider = builder.Configuration["Embeddings:Provider"] ?? "Null";
+if (string.Equals(provider, "Ollama", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddHttpClient<IEmbeddingClient, OllamaEmbeddingClient>();
+}
+else
+{
+    builder.Services.AddSingleton<IEmbeddingClient, NullEmbeddingClient>();
+}
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -32,6 +44,7 @@ app.UseHttpsRedirection();
 
 app.MapEntitiesEndpoints();
 app.MapEdgesEndpoints();
+app.MapSearchEndpoints();
 
 app.Run();
 

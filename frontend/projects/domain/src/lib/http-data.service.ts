@@ -13,6 +13,7 @@ import {
   BqSearchMode,
 } from './models';
 import { SEED_AGENDA, SEED_HEATMAP } from './seed';
+import { structuredSearch } from './structured-search';
 
 const EMPTY_AGENDA: BqAgenda = {
   ...SEED_AGENDA,
@@ -28,6 +29,8 @@ export class HttpBrainQDataService implements BrainQDataService {
   private readonly _entities = signal<readonly BqEntity[]>([]);
   private readonly _agenda = signal<BqAgenda>(EMPTY_AGENDA);
   private readonly _captureFailures = signal<number>(0);
+  private readonly _semanticQ = signal<string>('');
+  private readonly _semanticResults = signal<readonly BqEntity[]>([]);
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
   readonly agenda: Signal<BqAgenda> = this._agenda.asReadonly();
@@ -64,38 +67,19 @@ export class HttpBrainQDataService implements BrainQDataService {
   }
 
   search(query: string, mode: BqSearchMode): readonly BqEntity[] {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return [];
-    const entities = this._entities();
-    if (mode === 'structured') {
-      return entities
-        .map((e) => {
-          let score = 0;
-          if (e.title.toLowerCase().includes(q)) score += 3;
-          if ((e.body || '').toLowerCase().includes(q)) score += 2;
-          if ((e.tags || []).some((t) => t.includes(q))) score += 1;
-          return { e, score };
-        })
-        .filter((x) => x.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .map((x) => x.e);
+    if (mode === 'structured') return structuredSearch(this._entities(), q);
+    if (this._semanticQ() !== q) {
+      this._semanticQ.set(q);
+      this.http
+        .get<readonly { entity: BqEntity }[]>(`${this.base}/search`, { params: { q } })
+        .subscribe({
+          next: (hits) => this._semanticResults.set(hits.map((h) => h.entity)),
+          error: () => this._semanticResults.set([]),
+        });
     }
-    const tokens = q.split(/\s+/).filter(Boolean);
-    return entities
-      .map((e) => {
-        const hay = (e.title + ' ' + (e.body || '') + ' ' + (e.tags || []).join(' ')).toLowerCase();
-        let score = 0;
-        for (const t of tokens) {
-          if (hay.includes(t)) score += 1;
-          if (hay.includes(t.slice(0, 4))) score += 0.4;
-        }
-        if (e.type === 'Idea' || e.type === 'Note') score += 0.6;
-        return { e, score };
-      })
-      .filter((x) => x.score > 0.3)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 8)
-      .map((x) => x.e);
+    return this._semanticResults();
   }
 
   inferType(text: string): BqEntityType {

@@ -11,6 +11,7 @@ import {
   BqSearchMode,
 } from './models';
 import { SEED_AGENDA, SEED_ENTITIES, SEED_HEATMAP } from './seed';
+import { structuredSearch } from './structured-search';
 
 @Injectable()
 export class InMemoryBrainQDataService implements BrainQDataService {
@@ -49,23 +50,13 @@ export class InMemoryBrainQDataService implements BrainQDataService {
   }
 
   search(query: string, mode: BqSearchMode): readonly BqEntity[] {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return [];
     const entities = this._entities();
-    if (mode === 'structured') {
-      return entities
-        .map((e) => {
-          let score = 0;
-          if (e.title.toLowerCase().includes(q)) score += 3;
-          if ((e.body || '').toLowerCase().includes(q)) score += 2;
-          if ((e.tags || []).some((t) => t.includes(q))) score += 1;
-          return { e, score };
-        })
-        .filter((x) => x.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .map((x) => x.e);
-    }
-    const tokens = q.split(/\s+/).filter(Boolean);
+    if (mode === 'structured') return structuredSearch(entities, q);
+    // In-memory semantic fallback: token-fuzzy match over title/body/tags.
+    const lower = q.toLowerCase();
+    const tokens = lower.split(/\s+/).filter(Boolean);
     return entities
       .map((e) => {
         const hay = (e.title + ' ' + (e.body || '') + ' ' + (e.tags || []).join(' ')).toLowerCase();
