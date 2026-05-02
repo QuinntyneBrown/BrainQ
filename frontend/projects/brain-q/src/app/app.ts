@@ -109,6 +109,11 @@ export class App {
   }
 
   private readonly onKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && this.shell.captureOpen()) {
+      this.shell.closeCapture();
+      e.preventDefault();
+      return;
+    }
     if (e.key !== 'n' && e.key !== 'N') return;
     const target = e.target as HTMLElement | null;
     if (target?.matches?.('input, textarea, [contenteditable="true"]')) return;
