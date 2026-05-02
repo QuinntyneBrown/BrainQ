@@ -106,3 +106,62 @@ describe('HttpBrainQDataService — mutation failures bump the toast counter (bu
     expect(data.mutationFailures()).toBe(before + 1);
   });
 });
+
+describe('HttpBrainQDataService.search — stale response (bug 0013)', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideBrainQHttpDomain({ baseUrl: '/api' }),
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(BRAIN_Q_DATA);
+    httpMock.expectOne('/api/entities').flush([]);
+    httpMock.expectOne('/api/today').flush({
+      date: '',
+      greeting: '',
+      prompt: '',
+      recent: [],
+      nudges: [],
+    });
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('older response does not overwrite the latest query results', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const oldEntity = mkEntity('a', 'old result');
+    const newEntity = mkEntity('b', 'new result');
+
+    data.search('abc', 'semantic');
+    data.search('xyz', 'semantic');
+
+    const abcReq = httpMock.expectOne((r) => r.url === '/api/search' && r.params.get('q') === 'abc');
+    const xyzReq = httpMock.expectOne((r) => r.url === '/api/search' && r.params.get('q') === 'xyz');
+
+    // The newer query's response lands first…
+    xyzReq.flush([{ entity: newEntity }]);
+    // …then the older query's response, late, must NOT overwrite the newer one.
+    abcReq.flush([{ entity: oldEntity }]);
+
+    const visible = data.search('xyz', 'semantic');
+    expect(visible.map((e) => e.id)).toEqual(['b']);
+  });
+});
+
+function mkEntity(id: string, title: string) {
+  return {
+    id,
+    type: 'Note' as const,
+    title,
+    subtitle: '',
+    body: '',
+    meta: {},
+    tags: [],
+    edges: [],
+  };
+}
