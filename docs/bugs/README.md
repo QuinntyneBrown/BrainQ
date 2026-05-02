@@ -22,3 +22,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0016 | [Deleting an entity leaves a stale nudge in the agenda](0016-deleted-entity-leaves-stale-nudge.md) | Fixed | 2026-05-02 |
 | 0017 | [No proxy config; frontend dev server can't reach the API](0017-no-frontend-proxy.md) | Fixed | 2026-05-02 |
 | 0018 | [Today nudges are not keyboard-accessible](0018-nudge-not-keyboard-accessible.md) | Fixed | 2026-05-02 |
+| 0019 | [Detail's Connections section renders empty when every edge target is deleted](0019-detail-connections-empty-when-targets-deleted.md) | Fixed | 2026-05-02 |

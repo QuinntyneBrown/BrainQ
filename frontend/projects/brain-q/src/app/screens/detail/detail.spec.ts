@@ -77,4 +77,20 @@ describe('DetailScreen — slice 03 delete flow', () => {
 
     expect(cmp.menuOpen()).toBe(false);
   });
+
+  it('Connections section is hidden when every edge target is unresolvable (bug 0019)', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const a = data.capture({ type: 'Note', text: 'A with a dangling edge' });
+    // Add an edge to a non-existent entity — the data service doesn't validate
+    // toId, so the cache ends up with edges pointing nowhere.
+    data.addEdge(a.id, '00000000-dangling', 'mentions');
+
+    const fixture = TestBed.createComponent(DetailScreen);
+    fixture.componentRef.setInput('id', a.id);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    const section = host.querySelector('[data-testid="detail-connections"]');
+    expect(section).toBeNull();
+  });
 });
