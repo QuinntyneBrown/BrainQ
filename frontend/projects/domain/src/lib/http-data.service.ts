@@ -33,6 +33,7 @@ export class HttpBrainQDataService implements BrainQDataService {
   private readonly _semanticQ = signal<string>('');
   private readonly _semanticResults = signal<readonly BqEntity[]>([]);
   private readonly _heatmaps = signal<Record<string, BqHeatmap>>({});
+  private readonly _heatmapsInFlight = new Set<string>();
 
   readonly entities: Signal<readonly BqEntity[]> = this._entities.asReadonly();
   readonly agenda: Signal<BqAgenda> = this._agenda.asReadonly();
@@ -68,6 +69,8 @@ export class HttpBrainQDataService implements BrainQDataService {
   heatmapFor(id: string): BqHeatmap {
     const cached = this._heatmaps()[id];
     if (cached) return cached;
+    if (this._heatmapsInFlight.has(id)) return SEED_HEATMAP;
+    this._heatmapsInFlight.add(id);
     this.http
       .get<{ cells: number[][] }>(`${this.base}/commitments/${id}/activity`, {
         params: { weeks: '18' },
@@ -76,8 +79,9 @@ export class HttpBrainQDataService implements BrainQDataService {
         next: (resp) => {
           const map = resp.cells.map((week) => week.map((v) => v as BqHeatLevel));
           this._heatmaps.update((cache) => ({ ...cache, [id]: map }));
+          this._heatmapsInFlight.delete(id);
         },
-        error: () => {},
+        error: () => this._heatmapsInFlight.delete(id),
       });
     return SEED_HEATMAP;
   }
