@@ -185,6 +185,11 @@ public sealed class EntitiesController(AppDbContext db, IEmbeddingClient embed, 
 
     private static string FirstLineFrom(string text)
     {
-        return text.Split('\n', 2)[0].Trim();
+        foreach (var raw in text.Split('\n'))
+        {
+            var trimmed = raw.Trim();
+            if (trimmed.Length > 0) return trimmed;
+        }
+        return "";
     }
 }
