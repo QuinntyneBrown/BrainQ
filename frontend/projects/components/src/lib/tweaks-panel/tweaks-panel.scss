@@ -6,7 +6,7 @@
   position: fixed;
   right: 16px;
   bottom: 16px;
-  z-index: 200;
+  z-index: var(--bq-z-tweaks);
 }
 
 .tweaks-cog {

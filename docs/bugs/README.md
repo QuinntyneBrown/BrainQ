@@ -35,3 +35,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0029 | [Many interactive components lack a :focus-visible outline](0029-missing-focus-visible.md) | Fixed | 2026-05-02 |
 | 0030 | [bq-search-bar input strips its focus outline with no replacement](0030-search-bar-no-focus-indicator.md) | Fixed | 2026-05-02 |
 | 0031 | [Capture sheet textarea has no visible focus indicator](0031-capture-textarea-no-focus.md) | Fixed | 2026-05-02 |
+| 0032 | [Tweaks panel and health banner z-indexes are hardcoded, not tokenized](0032-z-index-not-tokenized.md) | Fixed | 2026-05-02 |
