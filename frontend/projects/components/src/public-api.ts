@@ -38,3 +38,4 @@ export * from './lib/stat-band/stat-band';
 export * from './lib/app-shell/app-shell';
 export * from './lib/side-rail/side-rail';
 export * from './lib/ctx-pane/ctx-pane';
+export * from './lib/tweaks-panel/tweaks-panel';

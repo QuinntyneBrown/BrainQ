@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { provideBrainQDomain } from 'domain';
+import { provideBqTweaks, provideBrainQDomain } from 'domain';
 import { App } from './app';
 import { routes } from './app.routes';
 
@@ -8,7 +8,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes), provideBrainQDomain()],
+      providers: [provideRouter(routes), provideBrainQDomain(), provideBqTweaks()],
     }).compileComponents();
   });
 

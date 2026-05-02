@@ -15,6 +15,7 @@ import {
   BqTabBar,
   BqTabItem,
   BqToast,
+  BqTweaksPanel,
   BQ_TYPE_LABEL,
 } from 'components';
 import { BqCapturePayload, BRAIN_Q_DATA } from 'domain';
@@ -52,6 +53,7 @@ const RAIL_ITEMS: BqRailItem[] = [
     BqSideRail,
     BqTabBar,
     BqToast,
+    BqTweaksPanel,
     BrainCtxPane,
     CaptureSheet,
     DetailScreen,
