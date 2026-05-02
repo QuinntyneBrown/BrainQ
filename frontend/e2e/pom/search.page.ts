@@ -6,7 +6,7 @@ export class SearchPage {
   constructor(private page: Page) {}
 
   goto = () => this.page.goto('/search');
-  input = () => this.page.getByTestId('search-input');
+  input = () => this.page.getByTestId('search-input').locator('input');
   modeChip = (m: Mode) => this.page.getByTestId(`search-mode-${m}`);
   results = () =>
     this.page.getByTestId('search-results').locator('[data-testid^="brain-row-"]');

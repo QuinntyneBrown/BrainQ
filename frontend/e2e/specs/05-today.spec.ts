@@ -12,8 +12,8 @@ test.describe('@slice-05 Today', () => {
     await brainq.today.goto();
     await expect(brainq.today.greeting()).toBeVisible();
     await expect(brainq.today.capturePrompt()).toBeVisible();
-    await expect(brainq.today.commitments()).toContainText('Read 30 minutes');
-    await expect(brainq.today.recentlyTouched()).toContainText('Standup notes');
+    await expect(brainq.today.commitments().first()).toContainText('Read 30 minutes');
+    await expect(brainq.today.recentlyTouched().first()).toContainText('Standup notes');
   });
 
   test('overdue person produces a nudge that opens the person on tap', async ({
@@ -22,7 +22,7 @@ test.describe('@slice-05 Today', () => {
   }) => {
     await seedEntity({ type: 'Person', title: 'Nadia Cole', tags: ['overdue'] });
     await brainq.today.goto();
-    await expect(brainq.today.nudges()).toContainText('Nadia Cole');
+    await expect(brainq.today.nudges().first()).toContainText('Nadia Cole');
     await brainq.today.nudges().first().click();
     await expect(brainq.detail.title()).toContainText('Nadia Cole');
   });

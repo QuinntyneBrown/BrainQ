@@ -76,10 +76,14 @@ export const test = base.extend<{
       await api.delete(`/api/entities/${id}`).catch(() => undefined);
     }
   },
-  seedGraph: async ({ seedEntity }, use) => {
+  seedGraph: async ({ seedEntity, api }, use) => {
     const graph: SeedGraph = async () => {
       const iris = await seedEntity({ type: 'Person', title: 'Iris Okafor' });
       const seamsNote = await seedEntity({ type: 'Note', title: 'seams note' });
+      const res = await api.post('/api/edges', {
+        data: { fromEntityId: iris.id, toEntityId: seamsNote.id, type: 'mentions' },
+      });
+      if (!res.ok()) throw new Error(`seedGraph edge failed ${res.status()} ${await res.text()}`);
       return { iris, seamsNote };
     };
     await use(graph);

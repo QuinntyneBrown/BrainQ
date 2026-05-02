@@ -37,7 +37,7 @@ test.describe('@slice-04 Semantic search', () => {
     await brainq.search.goto();
     await expect(brainq.search.modeChip('structured')).toHaveAttribute('aria-pressed', 'true');
     await brainq.search.input().fill('Iris');
-    await expect(brainq.search.results()).toContainText('Iris');
+    await expect(brainq.search.results().first()).toContainText('Iris');
     expect(semanticCalls).toBe(0);
   });
 

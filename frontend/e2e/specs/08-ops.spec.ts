@@ -7,6 +7,8 @@ test.describe('@slice-08 Ops', () => {
       title: 'XSS test',
       body: '<script>window.__pwn=1</script>',
     });
+    await brainq.brain.goto();
+    await brainq.brain.chip('All').click();
     await brainq.detail.open(e.id);
     const pwn = await page.evaluate(() => (window as unknown as { __pwn?: number }).__pwn);
     expect(pwn).toBeUndefined();

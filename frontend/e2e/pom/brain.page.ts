@@ -6,7 +6,7 @@ export class BrainPage {
   constructor(private page: Page) {}
 
   goto = () => this.page.goto('/brain');
-  search = () => this.page.getByTestId('brain-search');
+  search = () => this.page.getByTestId('brain-search').locator('input');
   chip = (id: BrainChip) => this.page.getByTestId(`brain-chip-${id}`);
   rows = () => this.page.locator('[data-testid^="brain-row-"]');
   row = (id: string) => this.page.getByTestId(`brain-row-${id}`);

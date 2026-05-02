@@ -4,12 +4,13 @@ test.describe('@slice-03 Detail + edges', () => {
   test('outbound + inbound edges render', async ({ brainq, seedGraph }) => {
     const { iris, seamsNote } = await seedGraph();
     await brainq.brain.goto();
+    await brainq.brain.chip('All').click();
     await brainq.detail.open(iris.id);
-    await expect(brainq.detail.connections()).toContainText(seamsNote.title);
+    await expect(brainq.detail.connections().first()).toContainText(seamsNote.title);
 
     await brainq.detail.back();
     await brainq.detail.open(seamsNote.id);
-    await expect(brainq.detail.mentionedBy()).toContainText('Iris');
+    await expect(brainq.detail.mentionedBy().first()).toContainText('Iris');
   });
 
   test('xl: neighborhood graph centers on open entity, click navigates', async ({
@@ -26,8 +27,9 @@ test.describe('@slice-03 Detail + edges', () => {
   });
 
   test('delete removes entity and its edges, returns to list', async ({ brainq, seedEntity }) => {
-    const note = await seedEntity({ type: 'Note', text: 'temporary thought' });
+    const note = await seedEntity({ type: 'Note', title: 'temporary thought' });
     await brainq.brain.goto();
+    await brainq.brain.chip('All').click();
     await brainq.detail.open(note.id);
     await brainq.detail.more();
     await brainq.detail.delete();

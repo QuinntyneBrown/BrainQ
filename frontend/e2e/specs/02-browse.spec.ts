@@ -10,11 +10,11 @@ test.describe('@slice-02 Browse', () => {
 
     await brainq.brain.goto();
     await expect(brainq.brain.recallq.band()).toBeVisible();
-    await expect(brainq.brain.recallq.overdue()).toContainText('Nadia Cole');
+    await expect(brainq.brain.recallq.overdue().first()).toContainText('Nadia Cole');
 
     await brainq.brain.chip('Project').click();
     await expect(brainq.brain.recallq.band()).toBeHidden();
-    await expect(brainq.brain.rows()).toContainText('Q-Suite consolidation');
+    await expect(brainq.brain.rows().first()).toContainText('Q-Suite consolidation');
   });
 
   test('substring search filters the list', async ({ brainq, seedEntity }) => {
@@ -32,6 +32,6 @@ test.describe('@slice-02 Browse', () => {
 
     await brainq.brain.goto();
     await brainq.brain.chip('All').click();
-    await expect(brainq.brain.rows()).toContainText('Schema as a graph');
+    await expect(brainq.brain.rows().first()).toContainText('Schema as a graph');
   });
 });
