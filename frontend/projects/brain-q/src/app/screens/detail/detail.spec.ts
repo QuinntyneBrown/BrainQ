@@ -41,4 +41,24 @@ describe('DetailScreen — slice 03 delete flow', () => {
     const host = fixture.nativeElement as HTMLElement;
     expect(host.querySelector(`[data-testid="brain-row-${source.id}"]`)).toBeTruthy();
   });
+
+  it('Commitment card shows 0 (not blank) for unset streak/target (bug 0014)', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const c = data.capture({ type: 'Commitment', text: 'Stretch daily' });
+
+    const fixture = TestBed.createComponent(DetailScreen);
+    fixture.componentRef.setInput('id', c.id);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    const numerics = Array.from(host.querySelectorAll<HTMLElement>('.bq-display-num')).map(
+      (el) => el.textContent?.trim() ?? '',
+    );
+    // streak / today / target are the three .bq-display-num cells in the Commitment card
+    expect(numerics[0]).toBe('0');
+    // today cell is either '✓' or '—'
+    expect(['✓', '—']).toContain(numerics[1]);
+    // target should not be blank
+    expect(numerics[2]).not.toBe('');
+  });
 });
