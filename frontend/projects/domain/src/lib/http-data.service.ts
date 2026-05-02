@@ -16,6 +16,7 @@ import {
 import { SEED_AGENDA, SEED_HEATMAP } from './seed';
 import { structuredSearch } from './structured-search';
 import { inferType as inferTypeUtil, suggestRelated as suggestRelatedUtil } from './infer-type';
+import { titleFrom } from './title-from';
 
 const EMPTY_AGENDA: BqAgenda = {
   ...SEED_AGENDA,
@@ -275,10 +276,3 @@ function makeOptimistic(payload: BqCapturePayload): BqEntity {
   };
 }
 
-function titleFrom(text: string): string {
-  for (const raw of text.split(/\r?\n/)) {
-    const trimmed = raw.trim();
-    if (trimmed.length > 0) return trimmed.slice(0, 80);
-  }
-  return '';
-}

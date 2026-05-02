@@ -1,6 +1,7 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
 import { BrainQDataService } from './brain-q-data.service';
 import { inferType, suggestRelated } from './infer-type';
+import { titleFrom } from './title-from';
 import {
   BqAgenda,
   BqCapturePayload,
@@ -88,7 +89,7 @@ export class InMemoryBrainQDataService implements BrainQDataService {
     const entity: BqEntity = {
       id,
       type: payload.type,
-      title: payload.text.split('\n')[0].slice(0, 80) || payload.text,
+      title: titleFrom(payload.text),
       subtitle: 'Just captured',
       body: payload.text,
       meta: {},
