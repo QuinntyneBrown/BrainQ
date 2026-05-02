@@ -155,11 +155,7 @@ export class HttpBrainQDataService implements BrainQDataService {
     this._entities.update((xs) =>
       xs
         .filter((e) => e.id !== id)
-        .map((e) =>
-          e.edges.some((edge) => edge.to === id)
-            ? { ...e, edges: e.edges.filter((edge) => edge.to !== id) }
-            : e,
-        ),
+        .map((e) => ({ ...e, edges: e.edges.filter((edge) => edge.to !== id) })),
     );
     this._agenda.update((a) => ({ ...a, recent: a.recent.filter((rid) => rid !== id) }));
     this.http.delete(`${this.base}/entities/${id}`).subscribe({
@@ -170,40 +166,35 @@ export class HttpBrainQDataService implements BrainQDataService {
   addEdge(fromId: string, toId: string, kind: BqEdgeKind): void {
     const before = this._entities();
     this._entities.update((xs) =>
-      xs.map((e) =>
-        e.id === fromId && !e.edges.some((edge) => edge.to === toId && edge.kind === kind)
-          ? { ...e, edges: [...e.edges, { to: toId, kind }] }
-          : e,
-      ),
+      xs.map((e) => {
+        if (e.id !== fromId) return e;
+        if (e.edges.some((edge) => edge.to === toId && edge.kind === kind)) return e;
+        return { ...e, edges: [...e.edges, { to: toId, kind }] };
+      }),
     );
-    this.http.post(`${this.base}/edges`, { fromEntityId: fromId, toEntityId: toId, type: kind }).subscribe({
-      error: () => this._entities.set(before),
-    });
+    this.http
+      .post(`${this.base}/edges`, { fromEntityId: fromId, toEntityId: toId, type: kind })
+      .subscribe({ error: () => this._entities.set(before) });
   }
 
   removeEdge(fromId: string, toId: string, kind: BqEdgeKind): void {
     const before = this._entities();
     this._entities.update((xs) =>
-      xs.map((e) =>
-        e.id === fromId
-          ? { ...e, edges: e.edges.filter((edge) => !(edge.to === toId && edge.kind === kind)) }
-          : e,
-      ),
+      xs.map((e) => {
+        if (e.id !== fromId) return e;
+        return { ...e, edges: e.edges.filter((edge) => edge.to !== toId || edge.kind !== kind) };
+      }),
     );
-    this.http
-      .get<readonly { id: string; fromEntityId: string; toEntityId: string; type: string }[]>(
-        `${this.base}/edges?fromId=${fromId}&toId=${toId}&type=${kind}`,
-      )
-      .subscribe({
-        next: (edges) => {
-          const match = edges[0];
-          if (!match) return;
-          this.http.delete(`${this.base}/edges/${match.id}`).subscribe({
-            error: () => this._entities.set(before),
-          });
-        },
-        error: () => this._entities.set(before),
-      });
+    const url = `${this.base}/edges?fromId=${fromId}&toId=${toId}&type=${kind}`;
+    this.http.get<{ id: string }[]>(url).subscribe({
+      next: (edges) => {
+        if (edges.length === 0) return;
+        this.http.delete(`${this.base}/edges/${edges[0].id}`).subscribe({
+          error: () => this._entities.set(before),
+        });
+      },
+      error: () => this._entities.set(before),
+    });
   }
 
   private hydrate() {
