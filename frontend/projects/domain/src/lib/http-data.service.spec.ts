@@ -196,7 +196,11 @@ describe('HttpBrainQDataService.capture — optimistic title (bug 0027)', () => 
     const optimistic = data.capture({ type: 'Note', text: '\n\nhello world' });
     expect(optimistic.title).toBe('hello world');
 
-    // Drain the POST so afterEach.verify() is happy.
+    // Drain the POST and the refresh() that fires on success.
     httpMock.expectOne('/api/entities').flush(optimistic);
+    httpMock.match((r) => r.url === '/api/entities').forEach((r) => r.flush([]));
+    httpMock.match((r) => r.url === '/api/today').forEach((r) =>
+      r.flush({ date: '', greeting: '', prompt: '', recent: [], nudges: [] }),
+    );
   });
 });

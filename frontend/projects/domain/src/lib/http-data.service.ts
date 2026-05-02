@@ -276,6 +276,9 @@ function makeOptimistic(payload: BqCapturePayload): BqEntity {
 }
 
 function titleFrom(text: string): string {
-  const firstLine = text.split(/\r?\n/, 1)[0]?.trim() ?? text;
-  return firstLine.slice(0, 80);
+  for (const raw of text.split(/\r?\n/)) {
+    const trimmed = raw.trim();
+    if (trimmed.length > 0) return trimmed.slice(0, 80);
+  }
+  return '';
 }

@@ -30,3 +30,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0024 | [Tweaks panel doesn't close on outside click](0024-tweaks-panel-no-outside-click.md) | Fixed | 2026-05-02 |
 | 0025 | [inferType and suggestRelated duplicated across both data-service impls](0025-infer-type-duplicated.md) | Fixed | 2026-05-02 |
 | 0026 | [POST /api/entities produces an empty title when text starts with a newline](0026-empty-title-from-leading-newlines.md) | Fixed | 2026-05-02 |
+| 0027 | [HttpBrainQDataService optimistic title is empty for leading-newline text](0027-http-optimistic-empty-title.md) | Fixed | 2026-05-02 |
