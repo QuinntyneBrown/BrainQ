@@ -1,4 +1,4 @@
-<li class="nudge" (click)="open.emit()">
+<button type="button" class="nudge" (click)="open.emit()">
   <span class="mark"></span>
   <span class="text">{{ text() }}</span>
   @if (entityType(); as t) {
@@ -7,4 +7,4 @@
       <span class="entity">{{ entityTitle() }}</span>
     </span>
   }
-</li>
+</button>

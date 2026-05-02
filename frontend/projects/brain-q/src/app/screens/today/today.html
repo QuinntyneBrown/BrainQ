@@ -32,7 +32,7 @@
   @if (agenda().nudges.length) {
     <section class="block" data-testid="today-nudges">
       <bq-section-label>On your mind</bq-section-label>
-      <ul class="nudges">
+      <div class="nudges">
         @for (n of nudges(); track n.nudge.id) {
           <bq-nudge
             [text]="n.nudge.text"
@@ -42,7 +42,7 @@
             [attr.data-testid]="'nudge-' + n.nudge.id"
           />
         }
-      </ul>
+      </div>
     </section>
   }
 
