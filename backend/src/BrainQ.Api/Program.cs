@@ -72,7 +72,10 @@ else
         headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
         headers["X-Content-Type-Options"] = "nosniff";
         headers["Content-Security-Policy"] =
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+            "default-src 'self'; " +
+            "script-src 'self'; " +
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            "font-src 'self' https://fonts.gstatic.com";
         await next();
     });
 }
