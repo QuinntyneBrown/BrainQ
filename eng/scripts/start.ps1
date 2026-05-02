@@ -6,7 +6,13 @@ $ErrorActionPreference = 'Stop'
 $root = Resolve-Path "$PSScriptRoot\..\..\"
 
 Write-Host "==> postgres (docker compose)" -ForegroundColor Cyan
+$portOwner = (docker ps --filter "publish=5432" --format "{{.Names}}") -split "`n" |
+    Where-Object { $_ -and $_ -ne 'brainq-db' } | Select-Object -First 1
+if ($portOwner) {
+    throw "port 5432 is held by container '$portOwner'. Stop it (docker stop $portOwner) and re-run."
+}
 docker compose --project-directory $root up -d | Out-Host
+if ($LASTEXITCODE -ne 0) { throw "docker compose up failed (exit $LASTEXITCODE)" }
 
 Write-Host "==> waiting for db to be healthy"
 $deadline = (Get-Date).AddSeconds(60)
