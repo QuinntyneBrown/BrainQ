@@ -1,5 +1,7 @@
 # Slice 07 — Personalization (Tweaks)
 
+**Status:** Accepted (2026-05-02)
+
 **Traces to:** L2-025, L1-014
 
 ## 1. Overview
