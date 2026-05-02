@@ -1,6 +1,7 @@
 <div class="search" [class.is-lg]="size() === 'lg'">
   <bq-icon name="search" [size]="size() === 'lg' ? 18 : 16" [stroke]="1.4" />
   <input
+    #input
     class="input"
     [placeholder]="placeholder()"
     [value]="value()"

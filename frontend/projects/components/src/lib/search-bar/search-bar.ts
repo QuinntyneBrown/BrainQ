@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  input,
+  model,
+  output,
+  viewChild,
+} from '@angular/core';
 import { BqIcon } from '../icon/icon';
 import { BqIconButton } from '../icon-button/icon-button';
 
@@ -15,6 +24,14 @@ export class BqSearchBar {
   readonly size = input<'md' | 'lg'>('md');
   readonly autofocus = input<boolean>(false);
   readonly cleared = output<void>();
+
+  private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('input');
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.autofocus()) this.inputEl()?.nativeElement.focus();
+    });
+  }
 
   onInput(e: Event) {
     this.value.set((e.target as HTMLInputElement).value);
