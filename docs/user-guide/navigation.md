@@ -31,7 +31,7 @@ At xl, Detail also fills the right-side context pane with the **Neighborhood** g
 | Key | Action |
 |---|---|
 | `N` | Open Capture sheet (the side rail's `N` badge is the visible reminder; the shortcut works at every viewport, suppressed only while an input, textarea, or contenteditable element has focus) |
-| `Esc` | Close the Capture sheet or the More menu |
+| `Esc` | Close the Capture sheet (the More menu on Detail dismisses on the next click — Esc isn't bound there yet) |
 | `Tab` | Move focus through actionable elements; visible focus rings make this safe |
 
 ## Connection lost
