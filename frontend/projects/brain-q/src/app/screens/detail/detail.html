@@ -8,7 +8,7 @@
         <bq-type-glyph [type]="e.type" [size]="12" />
         <span class="bq-meta bq-meta-dim">{{ typeLabel[e.type] }}</span>
       </div>
-      <div class="more-wrap">
+      <div class="more-wrap" #moreWrap>
         <bq-icon-button ariaLabel="More" (click)="toggleMenu()" data-testid="detail-more">
           <bq-icon name="more" [size]="20" [stroke]="1.4" />
         </bq-icon-button>

@@ -1,11 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
+  ElementRef,
   computed,
   inject,
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   BqDetailCard,
@@ -59,6 +62,21 @@ export class DetailScreen {
   readonly typeLabel = BQ_TYPE_LABEL;
   readonly edgeLabel = BQ_EDGE_LABEL;
   readonly menuOpen = signal(false);
+  private readonly moreWrap = viewChild<ElementRef<HTMLElement>>('moreWrap');
+
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.menuOpen()) return;
+      const wrap = this.moreWrap()?.nativeElement;
+      const onPointerDown = (e: PointerEvent) => {
+        if (wrap && !wrap.contains(e.target as Node)) {
+          this.menuOpen.set(false);
+        }
+      };
+      document.addEventListener('pointerdown', onPointerDown);
+      onCleanup(() => document.removeEventListener('pointerdown', onPointerDown));
+    });
+  }
 
   progressPercent(p: number | undefined): number {
     return Math.round((p ?? 0) * 100);
