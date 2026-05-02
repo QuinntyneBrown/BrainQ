@@ -1,8 +1,18 @@
+
+Ensure the app is running, backend and frontend against the real database (no mocks or in-memory)
+
 Pull any changes from origin
 
-Randomly select a script that runs e2e tests from C:\projects\BrainQ\frontend\package.json.
+Randomly select a document in the user guide and verify the working functionality in the local app
 
-Run the script
+- verify the UI is correct as per the guidance implemented in C:\projects\BrainQ\docs\design-files
+- verify fonts are loaded
+- text spacing and alignment are correct
+- icons are loaded and visible
+- data is being correctly retrieved from real database
+- data is being persisted to the database correctly
+- authentication is working as expected
+
 
 Log any bugs in C:\projects\BrainQ\docs\bugs
 
