@@ -15,3 +15,4 @@ Each bug gets one file, numbered sequentially. The bug file describes the issue,
 | 0009 | [getting-started.md misnames the type glyphs](0009-getting-started-glyph-names.md) | Fixed | 2026-05-02 |
 | 0010 | [Esc shortcut documented but never bound](0010-esc-shortcut-unbound.md) | Fixed | 2026-05-02 |
 | 0011 | [heatmapFor(id) over-fetches /api/commitments/{id}/activity](0011-heatmap-duplicate-fetches.md) | Fixed | 2026-05-02 |
+| 0012 | [Delete / edge / commitment-log failures roll back silently (no toast)](0012-silent-write-failures.md) | Fixed | 2026-05-02 |

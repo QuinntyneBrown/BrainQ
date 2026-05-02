@@ -56,3 +56,53 @@ describe('HttpBrainQDataService.heatmapFor — bug 0011 dedupe', () => {
     httpMock.expectNone(`/api/commitments/${id}/activity?weeks=18`);
   });
 });
+
+describe('HttpBrainQDataService — mutation failures bump the toast counter (bug 0012)', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideBrainQHttpDomain({ baseUrl: '/api' }),
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(BRAIN_Q_DATA);
+    httpMock.expectOne('/api/entities').flush([]);
+    httpMock.expectOne('/api/today').flush({
+      date: '',
+      greeting: '',
+      prompt: '',
+      recent: [],
+      nudges: [],
+    });
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('removeEntity failure bumps the failure counter', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const before = data.mutationFailures();
+
+    data.removeEntity('00000000-0000-0000-0000-000000000000');
+    httpMock
+      .expectOne('/api/entities/00000000-0000-0000-0000-000000000000')
+      .flush('boom', { status: 500, statusText: 'Server Error' });
+
+    expect(data.mutationFailures()).toBe(before + 1);
+  });
+
+  it('logCommitment failure bumps the failure counter', () => {
+    const data = TestBed.inject(BRAIN_Q_DATA);
+    const before = data.mutationFailures();
+
+    data.logCommitment('00000000-0000-0000-0000-000000000000');
+    httpMock
+      .expectOne('/api/commitments/00000000-0000-0000-0000-000000000000/log')
+      .flush('boom', { status: 500, statusText: 'Server Error' });
+
+    expect(data.mutationFailures()).toBe(before + 1);
+  });
+});
