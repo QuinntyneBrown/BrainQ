@@ -14,6 +14,10 @@ yarn-error.log
 # Local dev server logs
 ng-serve-*.log
 
+# Playwright artifacts
+/test-results
+/playwright-report
+
 # IDEs and editors
 .idea/
 .project
